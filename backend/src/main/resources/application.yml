@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: jaram
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/jaram?serverTimezone=UTC&characterEncoding=UTF-8}
+    username: ${DB_USERNAME:jaram}
+    password: ${DB_PASSWORD:jaram}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    # Flyway 가 스키마 정본. Hibernate 는 검증만 수행한다.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+jaram:
+  jwt:
+    # HS256 → 최소 32바이트(256bit) 키. 운영은 반드시 env 로 주입.
+    secret: ${JWT_SECRET:dev-only-secret-please-change-me-0123456789abcdef}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+
+logging:
+  level:
+    com.jaram: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
+
+logging:
+  level:
+    com.jaram: INFO

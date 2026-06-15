@@ -1,0 +1,22 @@
+# 통합테스트 설정. DataSource 는 Testcontainers(@ServiceConnection)가 주입한다.
+# 이 파일은 테스트 클래스패스에서 main 의 application.yml 을 대체한다(동일 파일명).
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+jaram:
+  jwt:
+    secret: test-only-secret-0123456789abcdef0123456789abcdef
+    expiration-seconds: 3600
+
+logging:
+  level:
+    com.jaram: DEBUG
