@@ -4,6 +4,7 @@ import com.jaram.common.response.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +43,17 @@ public class GlobalExceptionHandler {
         ErrorCode code = ErrorCode.VALIDATION_FAILED;
         ApiError body = ApiError.of(code.getStatus().value(), code.name(), code.getDefaultMessage(),
                 request.getRequestURI(), details);
+        return ResponseEntity.status(code.getStatus()).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex,
+                                                        HttpServletRequest request) {
+        // 유니크/FK 등 DB 제약 위반(예: token_alias 동시 등록 경쟁) → 500 대신 명확한 409
+        ErrorCode code = ErrorCode.DATA_CONFLICT;
+        log.warn("DataIntegrityViolation at {}: {}", request.getRequestURI(), ex.getMostSpecificCause().getMessage());
+        ApiError body = ApiError.of(code.getStatus().value(), code.name(), code.getDefaultMessage(),
+                request.getRequestURI());
         return ResponseEntity.status(code.getStatus()).body(body);
     }
 

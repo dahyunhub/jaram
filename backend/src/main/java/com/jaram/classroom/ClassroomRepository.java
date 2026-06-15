@@ -6,8 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClassroomRepository extends JpaRepository<Classroom, Long> {
+
+    /** 소유권 검증용 — 현재 교사가 소유한 반만. 타 교사 반은 빈 결과(존재 비노출). */
+    Optional<Classroom> findByIdAndTeacherId(Long id, Long teacherId);
 
     /**
      * 현재 교사가 소유한 반 목록을 아이 수(soft delete 제외)와 함께 조회한다(API [2]).

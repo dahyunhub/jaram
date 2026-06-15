@@ -89,6 +89,7 @@ related:
 |------|------|-------------|-----------|
 | `ANALYSIS_IN_PROGRESS` | 409 | 이미 분석이 진행 중이에요. 잠시 후 다시 시도해 주세요. | NFR-4: 사용자당 동시 분석 1건 가드 |
 | `JOURNAL_ALREADY_EXISTS` | 409 | 그 날짜의 보육일지가 이미 있어요. 재분석을 이용해 주세요. | FR-3 유니크 위반(신규 생성 시도) |
+| `DATA_CONFLICT` | 409 | 요청이 현재 상태와 충돌해요. 잠시 후 다시 시도해 주세요. | DB 제약 위반 폴백(예: token_alias 동시 등록 경쟁 → `DataIntegrityViolationException`) |
 | `REPORT_NO_MEMO` | 422 | 해당 기간에 작성된 메모가 없어요. | FR-8 수동평가: 기간 내 메모 0건 |
 
 ### 3.5 AI 분석 (AI) — 모든 메시지에 "메모 보존" 포함 (FR-4)
@@ -135,6 +136,7 @@ public enum ErrorCode {
     // CONFLICT / STATE
     ANALYSIS_IN_PROGRESS(HttpStatus.CONFLICT, "이미 분석이 진행 중이에요. 잠시 후 다시 시도해 주세요."),
     JOURNAL_ALREADY_EXISTS(HttpStatus.CONFLICT, "그 날짜의 보육일지가 이미 있어요. 재분석을 이용해 주세요."),
+    DATA_CONFLICT(HttpStatus.CONFLICT, "요청이 현재 상태와 충돌해요. 잠시 후 다시 시도해 주세요."),
     REPORT_NO_MEMO(HttpStatus.UNPROCESSABLE_ENTITY, "해당 기간에 작성된 메모가 없어요."),
 
     // AI (메모 보존 고지 포함)
