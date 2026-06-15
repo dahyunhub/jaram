@@ -27,7 +27,10 @@ scope: 백엔드(Spring Boot)만. 프론트(Vue + Vite)는 Claude Design 으로 
 - ✅ **Story 1.1** 프로젝트 골격: Spring Boot 4.0.7 + Java 25 + Gradle 9.5, package-by-feature, 빌드 통과.
 - ✅ **Phase 0** 공통 기반: ErrorCode·BusinessException 계열·ApiError·GlobalExceptionHandler, BaseTimeEntity(UTC Auditing), JpaConfig, Flyway V1(7테이블), Testcontainers(MySQL 8.4) 통합테스트 베이스 — 완료(2026-06-15).
 - ✅ **Story 1.2** 인증: Teacher 엔티티/repo, SecurityConfig(무상태), JwtProvider/JwtAuthFilter/RestAuthenticationEntryPoint, AuthController `POST /api/v1/auth/login`, dev 시드 교사. 테스트 8개 통과(JWT 단위 3 + 인증 통합 4 + contextLoads 1) — 완료(2026-06-15).
+- ✅ **Story 1.3** 반 선택: Classroom 엔티티/repo, `GET /api/v1/classrooms`(아이 수 포함·학년도 내림차순), repo 레벨 teacher 소유권, @AuthenticationPrincipal 로 교사 식별. childCount 는 child 테이블 네이티브 카운트(soft delete 제외). 통합테스트 2개(소유권·정렬·childCount, 미인증 401) — 완료(2026-06-16). 총 10개 테스트 통과.
 - 프론트 골격(Vue+Vite)은 별도 진행 — 손대지 않음.
+
+> 테스트 노트: 통합테스트 컨테이너는 **싱글턴 패턴**(static 블록 start)으로 띄운다. `@Testcontainers`/`@Container` 로 관리하면 첫 클래스 종료 시 컨테이너가 멈춰 캐시된 컨텍스트를 쓰는 이후 클래스가 "Could not open JPA EntityManager" 로 실패한다.
 
 ### Phase 0 + 1.2 구현 노트 (Spring Boot 4 특이사항)
 
