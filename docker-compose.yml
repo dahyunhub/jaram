@@ -1,0 +1,42 @@
+# 자람 워킹 스켈레톤 (Story 1.5): app + mysql.
+# 시크릿은 .env 로 주입(.env 는 커밋 금지). 아래 ${VAR:-default} 는 데모 편의용 기본값 — 운영은 반드시 override.
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: jaram
+      MYSQL_USER: ${DB_USERNAME:-jaram}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-jaram}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - jaram-mysql-data:/var/lib/mysql
+
+  app:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      DB_URL: jdbc:mysql://mysql:3306/jaram?serverTimezone=UTC&characterEncoding=UTF-8
+      DB_USERNAME: ${DB_USERNAME:-jaram}
+      DB_PASSWORD: ${DB_PASSWORD:-jaram}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-please-change-me-0123456789abcdef}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+volumes:
+  jaram-mysql-data:

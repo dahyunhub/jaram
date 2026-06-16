@@ -39,8 +39,19 @@ cp .env.example .env          # 환경변수 채우기
 ./gradlew bootRun             # 실행 (MySQL 필요)
 ```
 
-- 기동에는 MySQL 이 필요하다(`db/migration` 의 Flyway 마이그레이션 적용). 컨테이너 구성은 이후 스토리(1.5)에서 추가된다.
+- 기동에는 MySQL 이 필요하다(`db/migration` 의 Flyway 마이그레이션 적용).
 - 헬스체크: `GET /actuator/health`
+
+### Docker 로 한 번에 (app + mysql)
+
+```bash
+cp .env.example .env          # 시크릿 채우기 (.env 는 커밋 금지)
+docker compose up -d --build  # app + mysql 기동, Flyway 자동 적용
+curl localhost:8080/actuator/health   # {"status":"UP"}
+```
+
+- 호스트 포트 충돌 시 `APP_PORT=8081 docker compose up -d` 로 변경 가능.
+- dev 프로파일은 시드 교사(`teacher@jaram.dev` / `password1234`)를 생성해 로그인을 바로 시험할 수 있다.
 
 ### 프론트엔드
 
@@ -53,5 +64,5 @@ npm run build                 # 프로덕션 빌드
 
 ## 현재 상태
 
-Story 1.1 (프로젝트 골격) 완료 — 빌드 통과, package-by-feature 골격 마련.
-다음: Flyway V1 스키마 · 인증(JWT) · 메모/일지/평가 기능 (에픽 1~4 참고).
+**Epic 1 완료** — 프로젝트 골격 · 인증(JWT) · 반 선택 · 아이 등록·관리 · 워킹 스켈레톤 Docker 배포.
+다음: Epic 2(메모 기록·타임라인) → Epic 3(AI 보육일지) → Epic 4(개인평가) → Epic 5(prod 배포). 상세는 `docs/specs/backend-implementation-plan.md`.

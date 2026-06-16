@@ -51,6 +51,7 @@ out/
 # Environment variables
 .env
 .env.*
+!.env.example
 
 # BMad - AI workflow framework
 _bmad/
