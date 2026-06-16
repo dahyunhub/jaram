@@ -88,9 +88,9 @@ class ClassroomIntegrationTest extends IntegrationTestSupport {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         Timestamp deletedAt = deleted ? now : null;
         jdbcTemplate.update("""
-                        INSERT INTO child (classroom_id, name, birth_date, token_alias, deleted_at, created_at, updated_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO child (classroom_id, name, birth_date, gender, token_alias, deleted_at, created_at, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                         """,
-                classroomId, name, Date.valueOf(LocalDate.of(2021, 4, 10)), alias, deletedAt, now, now);
+                classroomId, name, Date.valueOf(LocalDate.of(2021, 4, 10)), "MALE", alias, deletedAt, now, now);
     }
 }

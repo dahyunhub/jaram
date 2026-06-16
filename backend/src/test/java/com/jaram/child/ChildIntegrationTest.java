@@ -4,6 +4,7 @@ import com.jaram.auth.TeacherRepository;
 import com.jaram.auth.domain.Teacher;
 import com.jaram.auth.jwt.JwtProvider;
 import com.jaram.child.domain.Child;
+import com.jaram.child.domain.Gender;
 import com.jaram.child.dto.ChildRequest;
 import com.jaram.classroom.ClassroomRepository;
 import com.jaram.classroom.domain.Classroom;
@@ -62,12 +63,12 @@ class ChildIntegrationTest extends IntegrationTestSupport {
                 Classroom.create(teacherA.getId(), "햇살반", 2026, LocalDate.of(2026, 3, 2))).getId();
         classroomBId = classroomRepository.save(
                 Classroom.create(teacherB.getId(), "달님반", 2026, LocalDate.of(2026, 3, 2))).getId();
-        childBId = childRepository.save(Child.create(classroomBId, "남의아이", BIRTH, "아이A")).getId();
+        childBId = childRepository.save(Child.create(classroomBId, "남의아이", BIRTH, Gender.MALE, "아이A")).getId();
         tokenA = jwtProvider.createToken(teacherA.getId(), teacherA.getEmail());
     }
 
     private String body(String name, LocalDate birthDate) {
-        return objectMapper.writeValueAsString(new ChildRequest(name, birthDate));
+        return objectMapper.writeValueAsString(new ChildRequest(name, birthDate, Gender.MALE));
     }
 
     @Test
@@ -79,7 +80,28 @@ class ChildIntegrationTest extends IntegrationTestSupport {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value("김민준"))
                 .andExpect(jsonPath("$.birthDate").value("2021-04-10"))
+                .andExpect(jsonPath("$.gender").value("MALE"))
                 .andExpect(jsonPath("$.tokenAlias").value("아이A"));
+    }
+
+    @Test
+    void 성별이_응답에_그대로_반영된다() throws Exception {
+        mockMvc.perform(post("/api/v1/classrooms/{id}/children", classroomAId)
+                        .header("Authorization", "Bearer " + tokenA)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ChildRequest("박서윤", BIRTH, Gender.FEMALE))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.gender").value("FEMALE"));
+    }
+
+    @Test
+    void 성별이_없으면_400_VALIDATION_FAILED() throws Exception {
+        String noGender = "{\"name\":\"김민준\",\"birthDate\":\"2021-04-10\"}";
+        mockMvc.perform(post("/api/v1/classrooms/{id}/children", classroomAId)
+                        .header("Authorization", "Bearer " + tokenA)
+                        .contentType(MediaType.APPLICATION_JSON).content(noGender))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
     }
 
     @Test

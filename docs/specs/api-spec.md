@@ -103,26 +103,29 @@ related:
 **Response 200** — `name` 가나다순 정렬, 삭제 아동 제외.
 ```json
 [
-  { "id": 101, "name": "김민준", "birthDate": "2021-04-10", "tokenAlias": "아이A" },
-  { "id": 102, "name": "박서연", "birthDate": "2021-07-22", "tokenAlias": "아이B" }
+  { "id": 101, "name": "김민준", "birthDate": "2021-04-10", "gender": "MALE",   "tokenAlias": "아이A" },
+  { "id": 102, "name": "박서연", "birthDate": "2021-07-22", "gender": "FEMALE", "tokenAlias": "아이B" }
 ]
 ```
+- `gender`: enum `MALE`/`FEMALE`(한글 남/여 표기는 프론트 매핑).
+
 **에러:** `404 CLASSROOM_NOT_FOUND`(타 교사 반 포함).
 
 ### [4] POST `/api/v1/classrooms/{classroomId}/children` — 아이 등록
 
 **Request**
 ```json
-{ "name": "이도윤", "birthDate": "2021-02-15" }
+{ "name": "이도윤", "birthDate": "2021-02-15", "gender": "MALE" }
 ```
 | 필드 | 타입 | 검증 |
 |------|------|------|
 | `name` | string | `@NotBlank`, max 100 |
-| `birthDate` | date | `@NotNull`, `@Past` |
+| `birthDate` | date | `@NotNull`, `@Past`, 하한(유치원 연령 범위) |
+| `gender` | enum | `@NotNull`, `MALE`/`FEMALE` |
 
 **동작:** 등록 시 `tokenAlias` 자동 부여(반 내 유일). **Response 201**
 ```json
-{ "id": 103, "name": "이도윤", "birthDate": "2021-02-15", "tokenAlias": "아이C" }
+{ "id": 103, "name": "이도윤", "birthDate": "2021-02-15", "gender": "MALE", "tokenAlias": "아이C" }
 ```
 **에러:** `400 VALIDATION_FAILED` · `404 CLASSROOM_NOT_FOUND`.
 

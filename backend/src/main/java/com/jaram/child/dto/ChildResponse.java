@@ -1,6 +1,7 @@
 package com.jaram.child.dto;
 
 import com.jaram.child.domain.Child;
+import com.jaram.child.domain.Gender;
 
 import java.time.LocalDate;
 
@@ -11,10 +12,12 @@ public record ChildResponse(
         Long id,
         String name,
         LocalDate birthDate,
+        Gender gender,
         String tokenAlias
 ) {
 
     public static ChildResponse from(Child child) {
-        return new ChildResponse(child.getId(), child.getName(), child.getBirthDate(), child.getTokenAlias());
+        return new ChildResponse(child.getId(), child.getName(), child.getBirthDate(),
+                child.getGender(), child.getTokenAlias());
     }
 }

@@ -36,14 +36,14 @@ public class ChildService {
         verifyClassroomOwnership(teacherId, classroomId);
         String tokenAlias = generateTokenAlias(classroomId);
         Child child = childRepository.save(
-                Child.create(classroomId, request.name(), request.birthDate(), tokenAlias));
+                Child.create(classroomId, request.name(), request.birthDate(), request.gender(), tokenAlias));
         return ChildResponse.from(child);
     }
 
     @Transactional
     public ChildResponse updateChild(Long teacherId, Long childId, ChildRequest request) {
         Child child = findOwnedChild(teacherId, childId);
-        child.update(request.name(), request.birthDate());
+        child.update(request.name(), request.birthDate(), request.gender());
         return ChildResponse.from(child);
     }
 

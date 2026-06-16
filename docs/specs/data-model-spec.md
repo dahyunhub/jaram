@@ -94,6 +94,7 @@ PRD §3 용어집의 5영역. `memo.curriculum_area`에 저장. **분류 전(자
 | `classroom_id` | BIGINT | NOT NULL, FK→`classroom.id`(`fk_child_classroom`) | 소속 반 |
 | `name` | VARCHAR(100) | NOT NULL | **실명**(DB에만 저장, 외부 AI 전송 금지) |
 | `birth_date` | DATE | NOT NULL | 생년월일 |
+| `gender` | VARCHAR(10) | NOT NULL | 성별 enum `MALE`/`FEMALE`(한글 남/여는 프론트 매핑). **V2 추가** — 디자인 명단/등록 화면 정합 |
 | `token_alias` | VARCHAR(50) | NOT NULL | 저장형 가명(예: `아이A`). 등록 시 부여(FR-11). 비식별화 보조 식별자 — 상세는 §6 노트 |
 | `deleted_at` | DATETIME(6) | NULL | soft delete 마커. NULL=활성 |
 | `created_at` | DATETIME(6) | NOT NULL | |
@@ -288,6 +289,15 @@ CREATE TABLE child_report (
     INDEX idx_child_report_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
+
+### 4.1 V2 — `V2__add_child_gender.sql` (디자인 정합)
+
+```sql
+ALTER TABLE child
+    ADD COLUMN gender VARCHAR(10) NOT NULL AFTER birth_date;
+```
+
+> 클로드 디자인 목업의 아이 명단·등록 화면이 성별(남/여)을 다뤄 추가. enum `MALE`/`FEMALE`, JPA `@Enumerated(STRING)`. dev 시드 교사는 §5의 `DevDataInitializer`(코드)로 대체됨.
 
 ## 5. 시드 데이터 (선택, `V2__seed_teacher.sql` 또는 dev 전용)
 
