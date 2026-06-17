@@ -19,7 +19,7 @@ scope: 백엔드(Spring Boot)만. 프론트(Vue + Vite)는 Claude Design 으로 
 ## 결정 사항
 
 - **테스트 DB 전략:** Testcontainers(MySQL 8) 통합테스트. H2 는 V1 DDL(InnoDB·utf8mb4_0900·MEDIUMTEXT·DATETIME(6))을 검증 못 하므로 제외. (Docker 필요 — 로컬 확인됨 29.x)
-- **AI 벤더:** `AiClient` 추상화 뒤로 격리. 구현체는 Phase 3 에서 결정(Claude/OpenAI), env 주입.
+- **AI 벤더:** **OpenAI API**(사용자 확정 2026-06-16). `AiClient` 추상화 뒤 `OpenAiClient` 구현. 상세 = `docs/specs/ai-integration-spec.md`. 모델은 `AI_MODEL` env.
 - 단위테스트(순수 로직: JWT·비식별화·검증)는 DB 없이, 통합테스트(repo·엔드포인트)는 Testcontainers.
 
 ## 현재 상태
@@ -80,7 +80,7 @@ cross-cutting. 에픽상 Story 1.2 에 묶여 있으나 분리해 먼저 깐다.
 
 ## Phase 3 — Epic 3: AI 보육일지 (AI 인프라 선행 → 기능)
 
-> 선행 블로커: 일지 `content` 5영역 JSON 내부 스키마 + AI 응답 파싱 타입 확정(별도 AI 연동 명세 필요).
+> ✅ 선행 블로커 해소: 일지/평가 `content` JSON 스키마 + AI 응답 파싱 타입 = `docs/specs/ai-integration-spec.md`(Messages API raw HTTP, structured outputs, 비식별화 순서, OutputValidator 규칙).
 
 - **3.1** `AiClient` 인터페이스 + RestClient 구현(하드 타임아웃 ~20s, 연결·5xx 재시도), `AiClientConfig`, MockWebServer 테스트
 - **3.2** `Deidentifier` + `RestorationContext`(요청 스코프 `[[CHILD_n]]`, 복원 실패 예외)

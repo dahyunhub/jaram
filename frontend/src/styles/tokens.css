@@ -1,0 +1,219 @@
+/* ============================================================
+   자람 — 디자인 토큰 (유치원 교사 업무 도구)
+   봄 햇살 파스텔 + 노랑. 모든 화면이 공유.
+   ============================================================ */
+
+.jr {
+  /* 브랜드 / 포인트 (파스텔 옐로우) */
+  --brand-100: #FFF6DC;
+  --brand-300: #FFE08A;
+  --brand-500: #FFD45E;
+  --brand-700: #F5B940;
+
+  /* 배경 / 표면 (따뜻한 아이보리) */
+  --bg: #FFFCF5;
+  --surface: #FFFFFF;
+  --surface-soft: #FFFBF2;
+
+  /* 텍스트 (따뜻한 브라운그레이) */
+  --text: #43392E;
+  --text-sub: #8C8478;
+  --text-faint: #B7AFA2;
+
+  /* 상태색 */
+  --success: #7FD1AE;
+  --warn: #F08C7D;
+  --accent-new: #FF9E80;
+
+  /* 라인 / 구분 */
+  --hair: rgba(120,100,70,0.10);
+  --hair-strong: rgba(120,100,70,0.16);
+
+  /* 그림자 (낮고 부드럽고 따뜻하게) */
+  --shadow-sm: 0 2px 8px rgba(180,150,90,0.10);
+  --shadow: 0 4px 16px rgba(180,150,90,0.12);
+  --shadow-lg: 0 12px 34px rgba(180,150,90,0.18);
+
+  /* 라운딩 */
+  --r-card: 22px;
+  --r-input: 16px;
+  --r-pill: 999px;
+
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', system-ui, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
+}
+
+.jr *, .jr *::before, .jr *::after { box-sizing: border-box; }
+.jr-logo { font-family: 'Jua', 'Pretendard', sans-serif; letter-spacing: 0; white-space: nowrap; flex: 0 0 auto; }
+
+/* ---------- 타이포 ---------- */
+.jr-display { font-size: 28px; font-weight: 800; line-height: 1.18; letter-spacing: -0.02em; }
+.jr-h1 { font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; }
+.jr-h2 { font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: -0.015em; }
+.jr-body { font-size: 16px; font-weight: 500; line-height: 1.55; }
+.jr-cap { font-size: 13px; font-weight: 500; line-height: 1.4; color: var(--text-sub); }
+.jr-num { font-variant-numeric: tabular-nums; }
+
+/* ---------- 버튼 (전부 알약형) ---------- */
+.jr-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; cursor: pointer; font-family: inherit; font-weight: 700;
+  font-size: 16px; line-height: 1; border-radius: var(--r-pill);
+  padding: 15px 24px; min-height: 52px; transition: transform .12s cubic-bezier(.2,.8,.2,1.2), box-shadow .15s, background .15s, filter .15s;
+  white-space: nowrap; letter-spacing: -0.01em;
+}
+.jr-btn svg { flex: 0 0 auto; }
+.jr-btn--primary { background: var(--brand-500); color: var(--text); box-shadow: 0 4px 14px rgba(245,185,64,0.35); }
+.jr-btn--primary:hover { background: var(--brand-700); transform: translateY(-1px); }
+.jr-btn--primary:active { transform: translateY(0) scale(.98); }
+.jr-btn--secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--hair-strong); }
+.jr-btn--secondary:hover { background: var(--surface-soft); border-color: var(--brand-300); }
+.jr-btn--ghost { background: transparent; color: var(--text-sub); }
+.jr-btn--ghost:hover { background: rgba(120,100,70,0.07); color: var(--text); }
+.jr-btn--warn { background: var(--warn); color: #fff; box-shadow: 0 4px 14px rgba(240,140,125,0.35); }
+.jr-btn--warn:hover { filter: brightness(.97); transform: translateY(-1px); }
+.jr-btn--sm { min-height: 40px; padding: 10px 16px; font-size: 14px; }
+.jr-btn--lg { min-height: 60px; padding: 18px 28px; font-size: 18px; }
+.jr-btn--block { display: flex; width: 100%; }
+.jr-btn:disabled { background: var(--surface-soft); color: var(--text-faint); box-shadow: none; cursor: not-allowed; border: 1.5px solid var(--hair); }
+
+/* ---------- 칩 / 태그 ---------- */
+.jr-chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700;
+  padding: 6px 12px; border-radius: var(--r-pill); line-height: 1; white-space: nowrap;
+}
+.jr-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .9; }
+/* 누리과정 5영역 색 코딩 */
+.jr-area-body   { background: rgba(255,158,128,0.16); color: #C2553A; }
+.jr-area-comm   { background: rgba(126,196,232,0.20); color: #2C7AA6; }
+.jr-area-social { background: rgba(255,201,77,0.24);  color: #9A6B12; }
+.jr-area-art    { background: rgba(201,168,232,0.24); color: #7A4FB0; }
+.jr-area-nature { background: rgba(143,217,168,0.26); color: #3C8F62; }
+.jr-area-uncat  { background: rgba(140,132,120,0.14); color: #6E665A; border: 1px dashed rgba(140,132,120,0.5); }
+/* 영역 순색 (타임라인 좌측 색띠 등) */
+.jr-strip-body   { background: #FF9E80; }
+.jr-strip-comm   { background: #7EC4E8; }
+.jr-strip-social { background: #FFC94D; }
+.jr-strip-art    { background: #C9A8E8; }
+.jr-strip-nature { background: #8FD9A8; }
+.jr-strip-uncat  { background: #C9C2B4; }
+
+.jr-badge-new {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 800; letter-spacing: .03em;
+  padding: 3px 8px; border-radius: var(--r-pill); background: var(--accent-new); color: #fff;
+  box-shadow: 0 2px 6px rgba(255,158,128,0.4);
+}
+.jr-badge-count {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px;
+  padding: 0 7px; font-size: 12px; font-weight: 800; border-radius: var(--r-pill);
+  background: var(--brand-300); color: #8a6a1f;
+}
+
+/* 선택 토글 칩 (가이드 항목 등) */
+.jr-toggle {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-family: inherit;
+  font-size: 14px; font-weight: 600; padding: 9px 16px; border-radius: var(--r-pill);
+  background: var(--surface); border: 1.5px solid var(--hair-strong); color: var(--text-sub);
+  transition: all .14s; white-space: nowrap; flex: 0 0 auto;
+}
+.jr-toggle:hover { border-color: var(--brand-300); color: var(--text); }
+.jr-toggle.is-on { background: var(--brand-100); border-color: var(--brand-500); color: var(--text); font-weight: 700; }
+
+/* ---------- 카드 ---------- */
+.jr-card { background: var(--surface); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 18px; }
+.jr-card--soft { background: var(--surface-soft); box-shadow: var(--shadow-sm); }
+.jr-card--flat { box-shadow: none; border: 1.5px solid var(--hair); }
+
+/* 메모 카드 */
+.jr-memo { display: flex; gap: 12px; align-items: flex-start; }
+.jr-memo .body { flex: 1; min-width: 0; }
+.jr-memo .top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.jr-memo .name { font-size: 15px; font-weight: 700; white-space: nowrap; }
+.jr-memo .time { margin-left: auto; font-size: 12px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.jr-memo .txt { font-size: 15px; line-height: 1.5; color: var(--text); }
+
+/* ---------- 입력 필드 ---------- */
+.jr-field-label { font-size: 13px; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; display: block; }
+.jr-input, .jr-textarea {
+  width: 100%; font-family: inherit; font-size: 16px; font-weight: 500; color: var(--text);
+  background: var(--surface-soft); border: 1.5px solid var(--hair-strong); border-radius: var(--r-input);
+  padding: 14px 16px; transition: border-color .14s, box-shadow .14s, background .14s;
+}
+.jr-textarea { line-height: 1.55; resize: none; }
+.jr-input::placeholder, .jr-textarea::placeholder { color: var(--text-faint); font-weight: 500; }
+.jr-input:focus, .jr-textarea:focus { outline: none; background: var(--surface); border-color: var(--brand-500); box-shadow: 0 0 0 4px rgba(255,212,94,0.22); }
+
+/* 가이드 라인 입력 (한 줄 톡톡) */
+.jr-guide-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
+.jr-guide-row:last-child { border-bottom: none; }
+.jr-guide-row .lab { flex: 0 0 auto; width: 106px; font-size: 12.5px; font-weight: 700; color: var(--text-sub); white-space: nowrap; }
+.jr-guide-row .inp { flex: 1; border: none; background: transparent; font-family: inherit; font-size: 15px; color: var(--text); padding: 4px 0; }
+.jr-guide-row .inp:focus { outline: none; }
+.jr-guide-row .inp::placeholder { color: var(--text-faint); }
+
+/* ---------- 아바타 ---------- */
+.jr-avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: 40px; height: 40px; border-radius: 50%; font-weight: 800; font-size: 15px;
+  color: #fff; letter-spacing: -0.04em; white-space: nowrap; overflow: hidden;
+}
+.jr-avatar--sm { width: 32px; height: 32px; font-size: 13px; }
+.jr-avatar--lg { width: 56px; height: 56px; font-size: 20px; }
+
+/* ---------- 토스트 ---------- */
+.jr-toast {
+  display: inline-flex; align-items: center; gap: 10px; padding: 14px 20px; border-radius: var(--r-pill);
+  background: var(--text); color: var(--brand-100); font-size: 15px; font-weight: 700;
+  box-shadow: var(--shadow-lg); white-space: nowrap;
+}
+.jr-toast .tick {
+  display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+  border-radius: 50%; background: var(--success); color: #fff; flex: 0 0 auto;
+}
+
+/* ---------- 배너 ---------- */
+.jr-banner {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px;
+  background: var(--brand-100); border: 1.5px solid var(--brand-300);
+}
+.jr-banner--warn { background: rgba(240,140,125,0.12); border-color: rgba(240,140,125,0.4); }
+
+/* ---------- 구분선 ---------- */
+.jr-divider { height: 1px; background: var(--hair); border: none; margin: 0; }
+
+/* ---------- 스크롤바 숨김 (디자인 프레임) ---------- */
+.jr-scroll { overflow: hidden; }
+
+/* ---------- 마이크로 모션 ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .jr-sprout .jr-sun { animation: jr-spin 9s linear infinite; }
+  .jr-sprout .jr-stem { animation: jr-grow 2.4s cubic-bezier(.3,.7,.3,1) infinite alternate; }
+  .jr-sprout .jr-leaf-l { animation: jr-sway 2.4s ease-in-out infinite alternate; transform-origin: 48px 56px; }
+  .jr-sprout .jr-leaf-r { animation: jr-sway 2.4s ease-in-out infinite alternate-reverse; transform-origin: 48px 52px; }
+  .jr-dot-pulse { animation: jr-pulse 1.4s ease-in-out infinite; }
+}
+@keyframes jr-spin { to { transform: rotate(360deg); } }
+@keyframes jr-grow { from { transform: scaleY(.55); } to { transform: scaleY(1); } }
+@keyframes jr-sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+@keyframes jr-pulse { 0%,100% { opacity: .3; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }
+
+/* 메뉴 A/B 선택 카드 */
+.jr-menu-card {
+  display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 18px; cursor: pointer;
+  background: var(--surface); border: 2px solid var(--hair-strong); transition: all .15s;
+}
+.jr-menu-card:hover { border-color: var(--brand-300); }
+.jr-menu-card.is-on { border-color: var(--brand-500); background: var(--brand-100); box-shadow: 0 4px 14px rgba(245,185,64,0.22); }
+.jr-menu-ic { flex: 0 0 auto; width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+
+/* 일지 결과 영역 카드 (좌측 색띠) */
+.jr-area-block { position: relative; background: var(--surface); border-radius: 16px; padding: 16px 18px 16px 22px; box-shadow: var(--shadow-sm); overflow: hidden; }
+.jr-area-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--strip, var(--brand-500)); }
+
+/* 타임라인 */
+.jr-tl { position: relative; padding-left: 26px; }
+.jr-tl::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--hair-strong); }
+.jr-tl-node { position: absolute; left: 0; top: 6px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--bg); }
