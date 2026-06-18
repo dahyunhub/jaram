@@ -78,7 +78,7 @@ function SocialButtons({ verb = '시작하기' }) {
 function LoginForm({ big }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <Field label="이메일" type="email" placeholder="teacher@jaram.kr" />
+      <Field label="이메일" type="email" placeholder="teacher@ondo.kr" />
       <div>
         <Field label="비밀번호" type="password" placeholder="비밀번호를 입력해주세요" />
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 12 }}>
@@ -97,7 +97,7 @@ function SignupForm({ big }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: big ? 14 : 11 }}>
       <Field label="이름" placeholder="선생님 성함을 입력해주세요" />
-      <Field label="이메일" type="email" placeholder="teacher@jaram.kr" />
+      <Field label="이메일" type="email" placeholder="teacher@ondo.kr" />
       <Field label="비밀번호" type="password" placeholder="8자 이상 입력해주세요" />
       <Field label="비밀번호 확인" type="password" placeholder="비밀번호를 한 번 더 입력해주세요" />
       <button className="jr-btn jr-btn--primary jr-btn--block jr-btn--lg" style={{ marginTop: 4, marginBottom: 2 }}>회원가입</button>
@@ -142,12 +142,12 @@ function AuthMobile({ initial = 'login' }) {
 function AuthDesktop({ initial = 'login' }) {
   const [tab, setTab] = useState(initial);
   return (
-    <DesktopWindow url="app.jaram.kr/login" height={620}>
+    <DesktopWindow url="app.ondo.kr/login" height={620}>
       <div style={{ display: 'flex', height: '100%' }}>
         <BrandPanel />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 56px', overflow: 'hidden' }}>
           <div style={{ maxWidth: 380, width: '100%', margin: '0 auto' }}>
-            <div className="jr-h1" style={{ marginBottom: 4 }}>{tab === 'login' ? '다시 오셨네요, 반가워요' : '자람과 함께 시작해요'}</div>
+            <div className="jr-h1" style={{ marginBottom: 4 }}>{tab === 'login' ? '다시 오셨네요, 반가워요' : '온도과 함께 시작해요'}</div>
             <div className="jr-body" style={{ color: 'var(--text-sub)', marginBottom: 26 }}>{tab === 'login' ? '메모와 기록이 그대로 기다리고 있어요.' : '몇 가지만 입력하면 바로 시작할 수 있어요.'}</div>
             <AuthTabs tab={tab} setTab={setTab} big />
             {tab === 'login' ? <LoginForm big /> : <SignupForm big />}

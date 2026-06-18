@@ -76,7 +76,7 @@ function TokenSheet() {
                 </div>
               ))}
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 16 }}>
-                <span className="jr-logo" style={{ flex: 1, fontSize: 28 }}>자람 · 포인트 서체 (로고 전용)</span>
+                <span className="jr-logo" style={{ flex: 1, fontSize: 28 }}>온도 · 포인트 서체 (로고 전용)</span>
                 <span style={{ fontSize: 12, color: 'var(--text-faint)', whiteSpace: 'nowrap' }}>Jua</span>
               </div>
             </div>

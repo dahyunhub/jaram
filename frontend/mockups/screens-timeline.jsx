@@ -205,7 +205,7 @@ function TimelineMobile({ empty = false, editFlatIndex = -1, evalModal = false }
 function TimelineDesktop({ empty = false, editFlatIndex = -1, evalModal = false }) {
   const [showEval, setShowEval] = useTlState(evalModal);
   return (
-    <DesktopWindow url="app.jaram.kr/child/minjun">
+    <DesktopWindow url="app.ondo.kr/child/minjun">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="children" teacher={T().teacher} cls={T().cls} />
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>

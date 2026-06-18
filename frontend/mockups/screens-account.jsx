@@ -93,7 +93,7 @@ function JournalHubMobile() {
 
 function JournalHubDesktop() {
   return (
-    <DesktopWindow url="app.jaram.kr/journal">
+    <DesktopWindow url="app.ondo.kr/journal">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="journal" teacher={AC().teacher} cls={AC().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px' }}>
@@ -234,7 +234,7 @@ function MyPageDesktop({ initialIdx = 0, initialOpen = false }) {
   const sel = AC().classes[idx];
   const isPast = sel.tag !== '올해';
   return (
-    <DesktopWindow url="app.jaram.kr/me">
+    <DesktopWindow url="app.ondo.kr/me">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="me" teacher={AC().teacher} cls={AC().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px', position: 'relative' }}>

@@ -116,7 +116,7 @@ function OnboardMobile() {
 function OnboardDesktop() {
   const added = R().children.slice(0, 6);
   return (
-    <DesktopWindow url="app.jaram.kr/onboarding" height={660}>
+    <DesktopWindow url="app.ondo.kr/onboarding" height={660}>
       <div style={{ display: 'flex', height: '100%' }}>
         {/* 좌: 입력 폼 */}
         <div style={{ flex: '0 0 auto', width: 460, padding: '36px 44px', borderRight: '1px solid var(--hair)', overflow: 'hidden' }}>
@@ -136,7 +136,7 @@ function OnboardDesktop() {
           <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 8 }}>
             {added.map(c => <AddedRow key={c.name} name={c.name} birth={c.birth} />)}
           </div>
-          <button className="jr-btn jr-btn--primary jr-btn--lg" style={{ marginTop: 18 }}>{added.length}명으로 자람 시작하기 <Icon name="chevR" size={20} /></button>
+          <button className="jr-btn jr-btn--primary jr-btn--lg" style={{ marginTop: 18 }}>{added.length}명으로 온도 시작하기 <Icon name="chevR" size={20} /></button>
         </div>
       </div>
     </DesktopWindow>
@@ -194,7 +194,7 @@ function EditChildMobile({ delModal = false }) {
 function EditChildDesktop({ delModal = false }) {
   const [open, setOpen] = React.useState(delModal);
   return (
-    <DesktopWindow url="app.jaram.kr/children/minjun/edit">
+    <DesktopWindow url="app.ondo.kr/children/minjun/edit">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="children" teacher={R().teacher} cls={R().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
@@ -248,7 +248,7 @@ function AddChildMobile() {
 
 function AddChildDesktop() {
   return (
-    <DesktopWindow url="app.jaram.kr/children/new">
+    <DesktopWindow url="app.ondo.kr/children/new">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="children" teacher={R().teacher} cls={R().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

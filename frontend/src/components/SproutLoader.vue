@@ -1,5 +1,5 @@
 <script setup>
-// jaram-ui.jsx SproutLoader 포팅 — 자라는 새싹(빈 상태/로딩 일러스트)
+// ondo-ui.jsx SproutLoader 포팅 — 자라는 새싹(빈 상태/로딩 일러스트)
 defineProps({ size: { type: [Number, String], default: 92 } })
 </script>
 

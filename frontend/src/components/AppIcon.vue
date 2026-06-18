@@ -7,7 +7,7 @@ const props = defineProps({
   stroke: { type: [Number, String], default: 2 },
 })
 
-// jaram-ui.jsx Icon 의 둥근 라인 아이콘 포팅(필요분). 모두 currentColor stroke.
+// ondo-ui.jsx Icon 의 둥근 라인 아이콘 포팅(필요분). 모두 currentColor stroke.
 const PATHS = {
   chevR: '<path d="M9 5l7 7-7 7"/>',
   chevL: '<path d="M15 5l-7 7 7 7"/>',

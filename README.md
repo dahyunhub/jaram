@@ -1,4 +1,6 @@
-# 자람 (jaram)
+# 온도 (ONDO)
+
+> **온전히 도와드리겠습니다.** — 선생님 곁의 따뜻한 온도.
 
 유치원 교사 업무 도구 — 짧은 **메모**를 남기면 아이별로 기록이 쌓이고, **AI**가 누리과정 기반 보육일지·개인 관찰평가를 만들어 주는 서비스.
 
@@ -8,9 +10,9 @@
 ## 저장소 구조
 
 ```
-jaram/
+ondo/
 ├── backend/                 # Spring Boot 4 + Java 25 (Gradle) REST API
-│   └── src/main/java/com/jaram/
+│   └── src/main/java/com/ondo/
 │       ├── auth/            # 로그인 · JWT
 │       ├── classroom/       # 담당 반
 │       ├── child/           # 아이 등록·관리(보존형 삭제)
@@ -63,7 +65,7 @@ curl localhost:8090/actuator/health    # {"status":"UP"}
 ```
 
 - 호스트 포트 충돌 시 `APP_PORT=8091 docker compose up -d` 로 변경 가능.
-- dev 프로파일은 시드 교사(`teacher@jaram.dev` / `password1234`)와 햇살반·아이 6명을 생성해 바로 둘러볼 수 있다.
+- dev 프로파일은 시드 교사(`teacher@ondo.dev` / `password1234`)와 햇살반·아이 6명을 생성해 바로 둘러볼 수 있다.
 
 ### 프론트엔드
 

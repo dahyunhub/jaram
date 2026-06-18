@@ -17,7 +17,7 @@ async function login(page) {
 
 async function loginAndEnter(page) {
   await login(page)
-  await page.getByPlaceholder('teacher@jaram.dev').fill('teacher@jaram.dev')
+  await page.getByPlaceholder('teacher@ondo.dev').fill('teacher@ondo.dev')
   await page.getByPlaceholder('비밀번호를 입력해주세요').fill('password1234')
   await page.locator('form button[type="submit"]').click()
   // 반 선택 또는 홈

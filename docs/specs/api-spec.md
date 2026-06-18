@@ -1,17 +1,17 @@
 ---
-title: 자람 — API 명세서 (REST API Specification)
+title: 온도 — API 명세서 (REST API Specification)
 status: draft
 created: 2026-06-15
 sources:
   - _bmad-output/planning-artifacts/architecture.md (API & Communication Patterns, Naming Patterns)
   - _bmad-output/planning-artifacts/epics.md (Epic 1~5 Stories)
-  - _bmad-output/planning-artifacts/prds/prd-jaram-2026-06-15/prd.md (FR-1~11)
+  - _bmad-output/planning-artifacts/prds/prd-ondo-2026-06-15/prd.md (FR-1~11)
 related:
   - docs/specs/data-model-spec.md
   - docs/specs/error-code-catalog.md
 ---
 
-# API 명세서 — 자람
+# API 명세서 — 온도
 
 백엔드 REST API 전 엔드포인트의 구현 명세다. 프론트(Claude Design 구현물)가 이 계약을 소비한다. UI/화면은 범위 밖.
 
@@ -62,7 +62,7 @@ related:
 
 **Request**
 ```json
-{ "email": "teacher@jaram.dev", "password": "••••••••" }
+{ "email": "teacher@ondo.dev", "password": "••••••••" }
 ```
 | 필드 | 타입 | 검증 |
 |------|------|------|
@@ -75,7 +75,7 @@ related:
   "accessToken": "eyJhbGciOi...",
   "tokenType": "Bearer",
   "expiresIn": 3600,
-  "teacher": { "id": 1, "email": "teacher@jaram.dev", "name": "민지" }
+  "teacher": { "id": 1, "email": "teacher@ondo.dev", "name": "민지" }
 }
 ```
 

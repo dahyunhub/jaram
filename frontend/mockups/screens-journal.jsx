@@ -242,7 +242,7 @@ function JournalDesktop({ state = 'draft' }) {
     );
   };
   return (
-    <DesktopWindow url="app.jaram.kr/journal">
+    <DesktopWindow url="app.ondo.kr/journal">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="journal" teacher={JD().teacher} cls={JD().cls} />
         <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>{inner()}

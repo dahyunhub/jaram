@@ -70,7 +70,7 @@ async function submit() {
         <form v-if="tab === 'login'" class="form" @submit.prevent="submit">
           <div>
             <label class="jr-field-label">이메일</label>
-            <input v-model="email" class="jr-input" type="email" placeholder="teacher@jaram.dev" autocomplete="username" />
+            <input v-model="email" class="jr-input" type="email" placeholder="teacher@ondo.dev" autocomplete="username" />
           </div>
           <div>
             <label class="jr-field-label">비밀번호</label>
@@ -94,7 +94,7 @@ async function submit() {
         <div v-else class="soon">
           <div class="soon-ic"><AppIcon name="sparkle" :size="28" /></div>
           <div class="soon-t">회원가입은 곧 제공돼요</div>
-          <div class="soon-d">지금은 시드 계정(teacher@jaram.dev)으로 로그인해 둘러볼 수 있어요.</div>
+          <div class="soon-d">지금은 시드 계정(teacher@ondo.dev)으로 로그인해 둘러볼 수 있어요.</div>
           <button class="jr-btn jr-btn--secondary" @click="tab = 'login'">로그인으로 돌아가기</button>
         </div>
       </div>

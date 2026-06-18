@@ -1,16 +1,16 @@
 ---
-title: 자람 — 에러코드 카탈로그 (Error Code Catalog)
+title: 온도 — 에러코드 카탈로그 (Error Code Catalog)
 status: draft
 created: 2026-06-15
 sources:
   - _bmad-output/planning-artifacts/architecture.md (API & Communication Patterns, Process Patterns)
-  - _bmad-output/planning-artifacts/prds/prd-jaram-2026-06-15/prd.md (FR-4 자산 무손실)
+  - _bmad-output/planning-artifacts/prds/prd-ondo-2026-06-15/prd.md (FR-4 자산 무손실)
 related:
   - docs/specs/api-spec.md
   - docs/specs/data-model-spec.md
 ---
 
-# 에러코드 카탈로그 — 자람
+# 에러코드 카탈로그 — 온도
 
 전역 예외 처리(`@RestControllerAdvice`)에서 사용하는 표준 에러 응답·코드 정의다. 모든 도메인/AI 예외는 `ErrorCode`로 매핑되어 **단일 지점**에서 HTTP 응답으로 변환된다(architecture: 예외 경계).
 
@@ -108,7 +108,7 @@ related:
 | `INTERNAL_ERROR` | 500 | 일시적인 문제가 발생했어요. 잠시 후 다시 시도해 주세요. | 매핑되지 않은 예외(최종 폴백) |
 | `METHOD_NOT_ALLOWED` | 405 | 허용되지 않은 요청이에요. | 잘못된 HTTP 메서드 |
 
-## 4. 참고 Java enum 스케치 (`com.jaram.common.exception.ErrorCode`)
+## 4. 참고 Java enum 스케치 (`com.ondo.common.exception.ErrorCode`)
 
 > 구현 시작점. 실제 코드는 패키지 규약(architecture)에 맞춰 작성.
 

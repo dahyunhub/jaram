@@ -1,9 +1,9 @@
 ---
-title: 자람 — 디자인 ↔ 백엔드 API 정합 가이드 (Design ↔ API Alignment)
+title: 온도 — 디자인 ↔ 백엔드 API 정합 가이드 (Design ↔ API Alignment)
 status: active
 created: 2026-06-16
 sources:
-  - Claude Design 핸드오프 번들 (자람.html + screens-*.jsx + data.jsx + tokens.css)
+  - Claude Design 핸드오프 번들 (온도.html + screens-*.jsx + data.jsx + tokens.css)
   - docs/specs/api-spec.md
   - docs/specs/data-model-spec.md
 purpose: 프론트(Vue, Claude Design 구현물)가 소비하는 백엔드 REST 계약과 디자인 목업의 데이터/화면을 1:1로 대조한 정합 문서. 프론트 연동 시 매핑 기준.

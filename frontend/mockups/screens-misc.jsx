@@ -40,7 +40,7 @@ function LoginMobile() {
 
 function LoginDesktop() {
   return (
-    <DesktopWindow url="app.jaram.kr/login" height={620}>
+    <DesktopWindow url="app.ondo.kr/login" height={620}>
       <div style={{ display: 'flex', height: '100%' }}>
         {/* 좌: 브랜드 */}
         <div style={{ flex: '0 0 46%', background: 'linear-gradient(165deg, #FFF6DC, #FFFBF2)', borderRight: '1px solid var(--hair)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 40 }}>
@@ -119,7 +119,7 @@ function HomeMobile() {
 
 function HomeDesktop() {
   return (
-    <DesktopWindow url="app.jaram.kr/home">
+    <DesktopWindow url="app.ondo.kr/home">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="home" teacher={M().teacher} cls={M().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px' }}>
@@ -209,7 +209,7 @@ function ChildListMobile() {
 
 function ChildListDesktop() {
   return (
-    <DesktopWindow url="app.jaram.kr/children">
+    <DesktopWindow url="app.ondo.kr/children">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="children" teacher={M().teacher} cls={M().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px' }}>

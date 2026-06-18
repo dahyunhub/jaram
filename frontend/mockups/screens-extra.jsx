@@ -73,7 +73,7 @@ function EmptyTimelineMobile() {
 // 빈 홈 (데스크톱)
 function EmptyHomeDesktop() {
   return (
-    <DesktopWindow url="app.jaram.kr/home">
+    <DesktopWindow url="app.ondo.kr/home">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="home" teacher={E().teacher} cls={E().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 48px', display: 'flex', flexDirection: 'column' }}>
@@ -129,7 +129,7 @@ function ReanalyzeModal({ compact }) {
     );
   }
   return (
-    <DesktopWindow url="app.jaram.kr/journal">
+    <DesktopWindow url="app.ondo.kr/journal">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="journal" teacher={E().teacher} cls={E().cls} />
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>

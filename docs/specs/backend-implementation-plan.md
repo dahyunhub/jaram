@@ -1,5 +1,5 @@
 ---
-title: 자람 — 백엔드 구현 계획 (Backend Implementation Plan)
+title: 온도 — 백엔드 구현 계획 (Backend Implementation Plan)
 status: active
 created: 2026-06-15
 sources:
@@ -11,10 +11,10 @@ sources:
 scope: 백엔드(Spring Boot)만. 프론트(Vue + Vite)는 Claude Design 으로 별도 구현 중 — 본 계획 범위 밖.
 ---
 
-# 백엔드 구현 계획 — 자람
+# 백엔드 구현 계획 — 온도
 
 명세 3종(데이터 모델·API·에러코드)과 아키텍처/에픽을 코드 작업으로 매핑한 실행 계획.
-**Flyway = 스키마 정본**, `ddl-auto=validate`, package-by-feature(`com.jaram.*`)를 정본으로 따른다.
+**Flyway = 스키마 정본**, `ddl-auto=validate`, package-by-feature(`com.ondo.*`)를 정본으로 따른다.
 
 ## 결정 사항
 

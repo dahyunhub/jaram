@@ -1,15 +1,15 @@
 ---
-title: 자람 — 데이터 모델 명세 (Data Model Spec)
+title: 온도 — 데이터 모델 명세 (Data Model Spec)
 status: draft
 created: 2026-06-15
 sources:
   - _bmad-output/planning-artifacts/architecture.md (Data Architecture, Naming Patterns)
   - _bmad-output/planning-artifacts/epics.md (Story별 Flyway 마이그레이션 노트)
-  - _bmad-output/planning-artifacts/prds/prd-jaram-2026-06-15/prd.md (FR-1~11)
-  - _bmad-output/planning-artifacts/prds/prd-jaram-2026-06-15/addendum.md (§B ERD)
+  - _bmad-output/planning-artifacts/prds/prd-ondo-2026-06-15/prd.md (FR-1~11)
+  - _bmad-output/planning-artifacts/prds/prd-ondo-2026-06-15/addendum.md (§B ERD)
 ---
 
-# 데이터 모델 명세 — 자람
+# 데이터 모델 명세 — 온도
 
 이 문서는 코드 구현(Entity·Flyway 마이그레이션)에 바로 쓸 수 있는 테이블 단위 명세다. **Flyway가 스키마 정본**이고 Hibernate는 `ddl-auto=validate`로 검증만 한다(architecture). 아래 V1 DDL과 JPA 엔티티는 컬럼/타입/제약이 1:1로 일치해야 한다.
 
@@ -181,7 +181,7 @@ PRD §3 용어집의 5영역. `memo.curriculum_area`에 저장. **분류 전(자
 > 위치: `backend/src/main/resources/db/migration/V1__init.sql`. 아래를 그대로 사용 가능. FK 순서를 위해 부모 테이블부터 생성한다.
 
 ```sql
--- V1__init.sql : 자람 초기 스키마 (7 tables)
+-- V1__init.sql : 온도 초기 스키마 (7 tables)
 -- DBMS: MySQL 8.x / InnoDB / utf8mb4
 
 CREATE TABLE teacher (
@@ -306,7 +306,7 @@ ALTER TABLE child
 ```sql
 -- 예시 (dev 전용). password_hash 는 실제 BCrypt 해시로 교체.
 INSERT INTO teacher (email, password_hash, name, created_at, updated_at)
-VALUES ('teacher@jaram.dev', '$2b$10$REPLACE_WITH_REAL_BCRYPT_HASH', '민지', UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+VALUES ('teacher@ondo.dev', '$2b$10$REPLACE_WITH_REAL_BCRYPT_HASH', '민지', UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
 ```
 
 ## 6. 구현 노트 / 미해결 명료화

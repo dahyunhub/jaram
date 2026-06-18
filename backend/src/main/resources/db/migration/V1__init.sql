@@ -1,4 +1,4 @@
--- V1__init.sql : 자람 초기 스키마 (7 tables)
+-- V1__init.sql : 온도 초기 스키마 (7 tables)
 -- DBMS: MySQL 8.x / InnoDB / utf8mb4
 -- 정본: docs/specs/data-model-spec.md §4
 

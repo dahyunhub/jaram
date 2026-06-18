@@ -143,7 +143,7 @@ function MemoMobile({ saved = false, initialField = null, empty = false }) {
 function MemoDesktop({ initialField = null, empty = false }) {
   const [openField, setOpenField] = useMemoState(initialField);
   return (
-    <DesktopWindow url="app.jaram.kr/memo">
+    <DesktopWindow url="app.ondo.kr/memo">
       <div style={{ display: 'flex', height: '100%' }}>
         <Sidebar active="home" teacher={D().teacher} cls={D().cls} />
         <div style={{ flex: 1, overflow: 'hidden', padding: '40px 56px', position: 'relative' }}>

@@ -1,4 +1,4 @@
-// data.jsx — 자람 샘플 데이터 (햇살반)
+// data.jsx — 온도 샘플 데이터 (햇살반)
 window.JR_DATA = {
   teacher: '김민서',
   cls: '햇살반',
@@ -77,7 +77,7 @@ window.JR_DATA = {
   ],
 
   // 마이 · 교사 정보
-  teacherEmail: 'minseo@jaram.kr',
+  teacherEmail: 'minseo@ondo.kr',
 
   // 일지·분석 기록 (최신순)
   journalHistory: [

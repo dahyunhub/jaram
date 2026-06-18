@@ -1,4 +1,4 @@
-// 자람 API 클라이언트 — fetch 래퍼.
+// 온도 API 클라이언트 — fetch 래퍼.
 // 개발 중엔 Vite 프록시(/api → :8090)를 통해 호출한다.
 import { auth } from '../stores/auth'
 

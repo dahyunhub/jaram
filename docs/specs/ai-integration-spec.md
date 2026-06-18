@@ -1,10 +1,10 @@
 ---
-title: 자람 — AI 연동 명세 (AI Integration Spec)
+title: 온도 — AI 연동 명세 (AI Integration Spec)
 status: draft
 created: 2026-06-16
 sources:
   - _bmad-output/planning-artifacts/architecture.md (AI Integration, TX 경계, 네이밍/구조)
-  - _bmad-output/planning-artifacts/prds/prd-jaram-2026-06-15/addendum.md (§C 프롬프트 강제 요구)
+  - _bmad-output/planning-artifacts/prds/prd-ondo-2026-06-15/addendum.md (§C 프롬프트 강제 요구)
   - docs/specs/api-spec.md (§5 일지, §6 평가, §9 미확정)
   - docs/specs/data-model-spec.md (daily_journal.content, child_report.content)
   - docs/specs/error-code-catalog.md (AI_* 코드)
@@ -12,7 +12,7 @@ provider: OpenAI API (사용자 확정 2026-06-16). 벤더는 AiClient 뒤로 �
 purpose: Epic 3/4 구현 전 선행 명세. api-spec §9의 미확정(일지 content JSON 스키마·AI 응답 파싱 타입)을 확정한다.
 ---
 
-# AI 연동 명세 — 자람
+# AI 연동 명세 — 온도
 
 외부 LLM(**OpenAI API**) 연동의 구현 계약. **일지/평가 content의 JSON 스키마**를 확정해 Epic 3/4 진입 블로커를 해소한다.
 
@@ -65,7 +65,7 @@ purpose: Epic 3/4 구현 전 선행 명세. api-spec §9의 미확정(일지 con
 
 > 모든 AI 계열 에러 메시지는 "작성하신 메모는 그대로 저장돼 있어요" 포함(FR-4).
 
-## 2. AiClient 인터페이스 (com.jaram.ai)
+## 2. AiClient 인터페이스 (com.ondo.ai)
 
 ```java
 public interface AiClient {

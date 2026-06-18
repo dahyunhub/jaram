@@ -1,7 +1,7 @@
 // 선택한 반(반 전환) 상태. localStorage 영속.
 import { reactive } from 'vue'
 
-const KEY = 'jaram.classroom'
+const KEY = 'ondo.classroom'
 
 function load() {
   try { return JSON.parse(localStorage.getItem(KEY)) } catch { return null }
