@@ -16,6 +16,12 @@ jaram:
   jwt:
     secret: test-only-secret-0123456789abcdef0123456789abcdef
     expiration-seconds: 3600
+  ai:
+    base-url: http://localhost
+    api-key: test
+    model: test-model
+    timeout-seconds: 5
+    max-retries: 1
 
 logging:
   level:

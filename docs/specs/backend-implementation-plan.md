@@ -33,7 +33,8 @@ scope: 백엔드(Spring Boot)만. 프론트(Vue + Vite)는 Claude Design 으로 
 - ✅ **디자인 정합(성별)**: 클로드 디자인 목업 대조 → 유일 갭이던 **성별**을 백엔드에 반영. Flyway `V2__add_child_gender.sql`, `Gender`(MALE/FEMALE) enum, Child/DTO/검증·테스트. 정합 가이드 `docs/specs/design-api-alignment.md` 작성 — 완료(2026-06-16). 총 23개 테스트 통과.
 - ✅ **프론트 Epic 1 연동**: Vue+Vite(로그인·반선택·아이 CRUD), api 클라이언트(JWT/401)·router 가드·tokens.css — 완료(2026-06-18, 커밋 92ec312). dev 시드 반·아이 추가.
 - ✅ **Epic 2 메모·타임라인** (Story 2.1~2.3): `Memo` 엔티티(CurriculumArea enum, soft delete), `POST /memos`(MEMO_EMPTY 불변식·소유권), `DELETE /memos/{id}`, `GET /children/{id}/timeline`(area 필터·UNCLASSIFIED·최신순), `PATCH /memos/{id}/curriculum-area`. HttpMessageNotReadable→400 매핑 추가. 통합테스트 10개 — 완료(2026-06-18). 총 33개 테스트 통과. → **Epic 2 백엔드 완료. 다음 = 메모/타임라인 프론트 연동 또는 Epic 3(AI 일지).**
-- 프론트 메모/타임라인 화면 연동은 다음 단계.
+- ✅ **프론트 Epic 2 연동**: MemoView·TimelineView(목업 정합) + 코드리뷰 패치 6건 — 완료(2026-06-18, 커밋 4de0d2b).
+- ✅ **Story 3.1 AiClient + OpenAI 연동**: `AiClient` 인터페이스, `AiRequest`(responseSchema Map), `OpenAiClient`(RestClient raw HTTP → `/v1/chat/completions`, structured outputs json_schema strict, 하드 타임아웃·재시도[연결·5xx·429, 타임아웃 제외], refusal/빈응답→AI_ANALYSIS_FAILED), `AiProperties`/`AiClientConfig`. MockWebServer 단위테스트 5개(성공·거절·5xx소진·5xx재시도성공·타임아웃) — 완료(2026-06-18). 총 38개 테스트. → 다음 = Story 3.2 비식별화 레이어.
 
 > 배포 노트: 호스트 포트는 `APP_PORT`(기본 8080)로 오버라이드 가능. 워킹 스켈레톤은 `SPRING_PROFILES_ACTIVE=dev`(시드 교사 → 로그인 데모). 운영 prod 프로파일·시크릿·deploy.sh 는 Epic 5(Story 5.1/5.2).
 

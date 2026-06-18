@@ -12,4 +12,8 @@ public class AiAnalysisException extends BusinessException {
     public AiAnalysisException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
+
+    public AiAnalysisException(ErrorCode errorCode, Throwable cause) {
+        super(errorCode, cause);
+    }
 }
