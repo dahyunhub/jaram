@@ -16,8 +16,8 @@ a { color: inherit; }
 /* 데스크톱: 좌측 사이드바 + 본문 */
 .shell-desktop { display: flex; min-height: 100vh; background: var(--bg); }
 .shell-main { flex: 1; min-width: 0; }
-/* 본문 안쪽 패딩/최대폭 (목업 padding 40px 48px 기준) */
-.dt-page { padding: 40px 48px; max-width: 1120px; }
+/* 본문 안쪽 패딩/최대폭 (목업 padding 40px 48px 기준) — 사이드바 우측 영역에서 가운데 정렬 */
+.dt-page { padding: 40px 48px; max-width: 1120px; margin: 0 auto; }
 
 /* 모바일: 폰 폭 한 컬럼 가운데 정렬 */
 .shell-mobile {

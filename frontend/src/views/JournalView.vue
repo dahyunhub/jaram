@@ -12,7 +12,7 @@ function soon() { toast.value = 'AI 분석은 곧 제공돼요 (Epic 3·4 준비
 </script>
 
 <template>
-  <div :class="isDesktop ? 'dt-page' : 'jh-m'">
+  <div :class="isDesktop ? 'dt-page jh-dt' : 'jh-m'">
     <template v-if="isDesktop">
       <div class="jr-display" style="margin-bottom:6px">일지·분석</div>
       <div class="dt-sub" style="margin-bottom:26px">{{ today }} · {{ session.classroom?.name }}</div>
@@ -59,6 +59,8 @@ function soon() { toast.value = 'AI 분석은 곧 제공돼요 (Epic 3·4 준비
 
 <style scoped>
 .jh-m { display: flex; flex-direction: column; }
+/* 데스크톱: 제목+카드를 콘텐츠 실폭(760px) 한 컬럼으로 묶어 통째로 가운데 정렬 */
+.jh-dt { max-width: 760px; }
 .m-head { padding-top: 6px; padding-bottom: 12px; }
 .body { padding-bottom: 28px; }
 .dt-sub { font-size: 15px; color: var(--text-sub); }

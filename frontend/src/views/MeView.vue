@@ -142,6 +142,8 @@ onMounted(() => {})
 
 <style scoped>
 .me-m { display: flex; flex-direction: column; }
+/* 데스크톱: 제목+내용을 콘텐츠 실폭(560px) 한 컬럼으로 묶어 통째로 가운데 정렬 */
+.me-dt { max-width: 560px; }
 .m-head { padding-top: 6px; padding-bottom: 12px; }
 .body { padding-bottom: 28px; }
 .me-col { max-width: 560px; display: flex; flex-direction: column; gap: 20px; }
