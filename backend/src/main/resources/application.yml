@@ -9,7 +9,8 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/ondo?serverTimezone=UTC&characterEncoding=UTF-8}
+    # 로컬(non-Docker) 기본값은 3307 — 호스트 3306 은 외부 MySQL 이 점유. Docker app 은 compose 의 DB_URL(mysql:3306) 로 override.
+    url: ${DB_URL:jdbc:mysql://localhost:3307/ondo?serverTimezone=UTC&characterEncoding=UTF-8}
     username: ${DB_USERNAME:ondo}
     password: ${DB_PASSWORD:ondo}
     driver-class-name: com.mysql.cj.jdbc.Driver
