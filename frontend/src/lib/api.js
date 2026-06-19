@@ -24,8 +24,10 @@ async function request(method, path, { body, auth: needAuth = true } = {}) {
     body: body !== undefined ? JSON.stringify(body) : undefined,
   })
 
-  // 401: 토큰 만료/무효 → 로그아웃하고 로그인으로
-  if (res.status === 401) {
+  // 401: 보호 요청의 토큰 만료/무효 → 로그아웃하고 로그인으로.
+  // 단 인증 불필요 요청(로그인 등)의 401 은 자격 검증 실패이므로 가로채지 않고
+  // 아래 표준 에러 처리로 흘려보내 서버의 실제 메시지를 그대로 노출한다.
+  if (res.status === 401 && needAuth) {
     auth.logout()
     if (location.hash !== '#/login' && location.pathname !== '/login') {
       window.location.assign('/login')
