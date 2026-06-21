@@ -54,10 +54,22 @@ class DeidentifierTest {
     }
 
     @Test
-    void 복원후_미해결_센티넬_잔존시_DeidentificationException() {
+    void 복원시_매핑없는_정상형식_센티넬은_중립어로_치환된다() {
         RestorationContext ctx = deidentifier.newContext(List.of("최아인"));
-        // 모델이 환각해 매핑에 없는 토큰을 끼워 넣은 경우
+        // 모델이 환각해 매핑에 없는 '정상 형식' 토큰을 끼워 넣은 경우 — 실명이 아니므로 "아이"로 흘려보낸다.
         String aiText = "{\"summary\":\"[[CHILD_1]] 와 [[CHILD_9]] 가 놀이했어요\"}";
+
+        String restored = ctx.restore(aiText);
+
+        assertThat(restored).isEqualTo("{\"summary\":\"최아인 와 아이 가 놀이했어요\"}");
+        assertThat(restored).doesNotContain("[[CHILD_");
+    }
+
+    @Test
+    void 복원후_형식깨진_센티넬_잔존시_DeidentificationException() {
+        RestorationContext ctx = deidentifier.newContext(List.of("최아인"));
+        // 정상 형식([[CHILD_<digits>]])이 아닌 깨진 센티넬은 진짜 이상 → 방어적 차단 유지(NFR-1).
+        String aiText = "{\"summary\":\"[[CHILD_oops]] 가 놀이했어요\"}";
 
         assertThatThrownBy(() -> ctx.restore(aiText))
                 .isInstanceOf(DeidentificationException.class);

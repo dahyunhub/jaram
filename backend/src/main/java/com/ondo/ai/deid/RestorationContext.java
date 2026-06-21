@@ -15,6 +15,11 @@ public final class RestorationContext {
     static final String TOKEN_PREFIX = "[[CHILD_";
     static final String TOKEN_SUFFIX = "]]";
 
+    /** 매핑에 없는 잘 형성된 환각 센티넬([[CHILD_<digits>]]) — 실명이 아니므로 중립어로 치환한다. */
+    private static final java.util.regex.Pattern UNMAPPED_SENTINEL =
+            java.util.regex.Pattern.compile("\\[\\[CHILD_\\d+\\]\\]");
+    private static final String NEUTRAL_NAME = "아이";
+
     /** 센티넬 토큰 조립의 단일 출처. Deidentifier 가 사용한다. */
     static String token(int n) {
         return TOKEN_PREFIX + n + TOKEN_SUFFIX;
@@ -47,6 +52,10 @@ public final class RestorationContext {
         for (Map.Entry<String, String> entry : tokenToName.entrySet()) {
             restored = restored.replace(entry.getKey(), entry.getValue());
         }
+        // 모델이 매핑에 없는 인덱스를 환각한 잘 형성된 센티넬([[CHILD_<digits>]])은 실명이 아니라 모델 artifact다.
+        // 실명 누수가 아니므로 중립어로 치환해 흘려보낸다(가용성↑). 정본: deferred-work 하드닝 항목.
+        restored = UNMAPPED_SENTINEL.matcher(restored).replaceAll(NEUTRAL_NAME);
+        // 그래도 센티넬 접두가 남으면(형식 깨짐 등 진짜 이상) 방어적으로 차단 유지(NFR-1).
         if (restored.contains(TOKEN_PREFIX)) {
             // 메시지에 원문/실명을 넣지 않는다(로그 금지 정책 일관).
             throw new DeidentificationException("복원 후 미해결 센티넬이 남아 있습니다.");
