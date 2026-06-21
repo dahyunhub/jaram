@@ -11,11 +11,25 @@ import AppIcon from '../components/AppIcon.vue'
 const router = useRouter()
 const { isDesktop } = useViewport()
 
-const tab = ref('login') // login | signup(준비 중)
+const tab = ref('login') // login | signup
 const email = ref('')
 const password = ref('')
+// 회원가입 폼 — 로그인과 입력을 분리해 탭 전환 시 섞이지 않게 한다.
+const name = ref('')
+const suEmail = ref('')
+const suPassword = ref('')
+const suPassword2 = ref('')
 const loading = ref(false)
 const error = ref('')
+
+function switchTab(t) {
+  tab.value = t
+  error.value = ''
+}
+
+function gotoNext() {
+  router.replace({ name: session.classroom ? 'home' : 'classrooms' })
+}
 
 async function submit() {
   error.value = ''
@@ -27,9 +41,37 @@ async function submit() {
   try {
     const res = await api.post('/auth/login', { email: email.value, password: password.value }, { auth: false })
     auth.setSession({ accessToken: res.accessToken, teacher: res.teacher })
-    router.replace({ name: session.classroom ? 'home' : 'classrooms' })
+    gotoNext()
   } catch (e) {
     error.value = e instanceof ApiError ? e.message : '로그인 중 문제가 발생했어요.'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function submitSignup() {
+  error.value = ''
+  if (!name.value || !suEmail.value || !suPassword.value || !suPassword2.value) {
+    error.value = '모든 항목을 입력해 주세요.'
+    return
+  }
+  if (suPassword.value.length < 8) {
+    error.value = '비밀번호는 8자 이상이어야 해요.'
+    return
+  }
+  if (suPassword.value !== suPassword2.value) {
+    error.value = '비밀번호가 일치하지 않아요.'
+    return
+  }
+  loading.value = true
+  try {
+    // 가입 성공 시 로그인과 동일한 토큰이 발급된다(자동 로그인) — api-spec [1b].
+    const res = await api.post('/auth/register',
+      { name: name.value, email: suEmail.value, password: suPassword.value }, { auth: false })
+    auth.setSession({ accessToken: res.accessToken, teacher: res.teacher })
+    gotoNext()
+  } catch (e) {
+    error.value = e instanceof ApiError ? e.message : '회원가입 중 문제가 발생했어요.'
   } finally {
     loading.value = false
   }
@@ -58,10 +100,10 @@ async function submit() {
 
         <!-- 탭 -->
         <div class="tabs" :class="{ big: isDesktop }">
-          <button class="tab" :class="{ on: tab === 'login' }" @click="tab = 'login'">
+          <button class="tab" :class="{ on: tab === 'login' }" @click="switchTab('login')">
             로그인<span class="ink" />
           </button>
-          <button class="tab" :class="{ on: tab === 'signup' }" @click="tab = 'signup'">
+          <button class="tab" :class="{ on: tab === 'signup' }" @click="switchTab('signup')">
             회원가입<span class="ink" />
           </button>
         </div>
@@ -90,13 +132,32 @@ async function submit() {
           </button>
         </form>
 
-        <!-- 회원가입(준비 중) -->
-        <div v-else class="soon">
-          <div class="soon-ic"><AppIcon name="sparkle" :size="28" /></div>
-          <div class="soon-t">회원가입은 곧 제공돼요</div>
-          <div class="soon-d">지금은 시드 계정(teacher@ondo.dev)으로 로그인해 둘러볼 수 있어요.</div>
-          <button class="jr-btn jr-btn--secondary" @click="tab = 'login'">로그인으로 돌아가기</button>
-        </div>
+        <!-- 회원가입 폼 -->
+        <form v-else class="form" @submit.prevent="submitSignup">
+          <div>
+            <label class="jr-field-label">이름</label>
+            <input v-model="name" class="jr-input" type="text" placeholder="선생님 성함을 입력해주세요" autocomplete="name" />
+          </div>
+          <div>
+            <label class="jr-field-label">이메일</label>
+            <input v-model="suEmail" class="jr-input" type="email" placeholder="teacher@ondo.dev" autocomplete="username" />
+          </div>
+          <div>
+            <label class="jr-field-label">비밀번호</label>
+            <input v-model="suPassword" class="jr-input" type="password" placeholder="8자 이상 입력해주세요" autocomplete="new-password" />
+          </div>
+          <div>
+            <label class="jr-field-label">비밀번호 확인</label>
+            <input v-model="suPassword2" class="jr-input" type="password" placeholder="비밀번호를 한 번 더 입력해주세요" autocomplete="new-password" />
+          </div>
+
+          <p v-if="error" class="err">{{ error }}</p>
+
+          <button class="jr-btn jr-btn--primary jr-btn--block jr-btn--lg" type="submit" :disabled="loading">
+            <template v-if="!loading">회원가입 <AppIcon name="chevR" :size="20" /></template>
+            <template v-else>가입 중…</template>
+          </button>
+        </form>
       </div>
     </section>
   </div>
@@ -144,10 +205,4 @@ async function submit() {
 .keep-lab { font-size: 13.5px; color: var(--text-sub); font-weight: 600; }
 .find { margin-left: auto; font-size: 13.5px; color: var(--text-sub); font-weight: 600; cursor: pointer; }
 .err { color: var(--warn); font-size: 13.5px; font-weight: 600; margin: -4px 2px 0; }
-
-.soon { text-align: center; padding: 20px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.soon-ic { width: 56px; height: 56px; border-radius: 18px; background: var(--brand-100); color: var(--brand-700); display: flex; align-items: center; justify-content: center; }
-.soon-t { font-size: 17px; font-weight: 800; }
-.soon-d { font-size: 13.5px; color: var(--text-sub); line-height: 1.6; max-width: 300px; }
-.soon .jr-btn { margin-top: 8px; }
 </style>
