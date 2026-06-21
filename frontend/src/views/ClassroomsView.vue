@@ -7,6 +7,7 @@ import { session } from '../stores/session'
 import { useViewport } from '../lib/useViewport'
 import Logo from '../components/Logo.vue'
 import AppIcon from '../components/AppIcon.vue'
+import NewClassroomModal from '../components/NewClassroomModal.vue'
 
 const router = useRouter()
 const { isDesktop } = useViewport()
@@ -14,6 +15,9 @@ const classrooms = ref([])
 const loading = ref(true)
 const error = ref('')
 const selectedId = ref(null)
+const showNew = ref(false)
+const toast = ref('')
+let toastTimer = null
 
 const nowYear = new Date().getFullYear()
 function tagOf(year) {
@@ -44,6 +48,21 @@ function start() {
   router.replace({ name: 'home' })
 }
 
+function showToast(msg) {
+  toast.value = msg
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => (toast.value = ''), 2400)
+}
+
+async function onCreated({ classroom, total, failed }) {
+  showNew.value = false
+  await load()
+  selectedId.value = classroom.id // 새 반을 선택 상태로
+  if (failed) showToast(`반을 만들었어요. 아이 ${total - failed}명 등록(${failed}명 실패 — 나중에 추가해 주세요).`)
+  else if (total) showToast(`${classroom.name} 반과 아이 ${total}명을 만들었어요.`)
+  else showToast(`${classroom.name} 반을 만들었어요. 아이는 나중에 추가할 수 있어요.`)
+}
+
 onMounted(load)
 </script>
 
@@ -72,7 +91,6 @@ onMounted(load)
 
         <p v-if="loading" class="muted">불러오는 중…</p>
         <p v-else-if="error" class="err">{{ error }}</p>
-        <p v-else-if="!classrooms.length" class="muted">담당하는 반이 아직 없어요.</p>
 
         <div v-else class="list" :class="{ wide: isDesktop }">
           <button
@@ -92,18 +110,32 @@ onMounted(load)
             </span>
             <AppIcon v-if="c.id === selectedId" name="check" :size="22" :stroke="2.6" class="chk" />
           </button>
+
+          <!-- 새로운 반 추가하기 (목록 카드와 같은 크기) -->
+          <button class="card add" @click="showNew = true">
+            <span class="ic add-ic"><AppIcon name="plus" :size="26" :stroke="2.6" /></span>
+            <span class="info">
+              <span class="name">새로운 반 추가하기</span>
+              <span class="sub">반 이름·학년도·아이를 입력해요</span>
+            </span>
+          </button>
         </div>
 
         <button
-          v-if="!loading && classrooms.length"
+          v-if="!loading && !error && selected"
           class="jr-btn jr-btn--primary jr-btn--lg start"
           :class="{ block: !isDesktop }"
           @click="start"
         >
-          {{ selected ? selected.name + '으로 시작하기' : '시작하기' }} <AppIcon name="chevR" :size="20" />
+          {{ selected.name + '으로 시작하기' }} <AppIcon name="chevR" :size="20" />
         </button>
       </div>
     </section>
+
+    <NewClassroomModal v-if="showNew" @close="showNew = false" @created="onCreated" />
+    <Transition name="fade">
+      <div v-if="toast" class="cls-toast">{{ toast }}</div>
+    </Transition>
   </div>
 </template>
 
@@ -139,6 +171,9 @@ onMounted(load)
 }
 .list.wide .card { padding: 18px 22px; }
 .card.on { background: var(--brand-100); border-color: var(--brand-500); box-shadow: 0 6px 18px rgba(245, 185, 64, .25); }
+.card.add { border-style: dashed; border-color: var(--hair-strong); background: var(--surface-soft); box-shadow: none; }
+.card.add .info { display: flex; flex-direction: column; }
+.add-ic { background: var(--brand-100); color: var(--brand-700); }
 .ic { width: 52px; height: 52px; border-radius: 16px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: var(--surface-soft); color: var(--text-sub); }
 .ic.on { background: var(--brand-300); color: #9A6B12; }
 .info { flex: 1; min-width: 0; }
@@ -153,4 +188,7 @@ onMounted(load)
 .cls.desk .start { align-self: flex-start; padding-left: 32px; padding-right: 32px; }
 .muted { color: var(--text-sub); }
 .err { color: var(--warn); font-weight: 600; }
+.cls-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 40px; z-index: 50; background: var(--text); color: #fff; font-size: 13.5px; font-weight: 600; padding: 11px 18px; border-radius: 999px; box-shadow: var(--shadow-lg); max-width: 90vw; text-align: center; }
+.fade-enter-active, .fade-leave-active { transition: opacity .2s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

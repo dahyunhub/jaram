@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface ClassroomRepository extends JpaRepository<Classroom, Long> {
 
+    /** 중복 반 생성 사전 차단(UNIQUE(teacher_id, name, year)와 동일 기준). */
+    boolean existsByTeacherIdAndNameAndYear(Long teacherId, String name, Integer year);
+
     /** 소유권 검증용 — 현재 교사가 소유한 반만. 타 교사 반은 빈 결과(존재 비노출). */
     Optional<Classroom> findByIdAndTeacherId(Long id, Long teacherId);
 

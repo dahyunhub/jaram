@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,6 +77,32 @@ class ClassroomIntegrationTest extends IntegrationTestSupport {
                 .andExpect(jsonPath("$[0].childCount").value(2))
                 .andExpect(jsonPath("$[1].year").value(2025))
                 .andExpect(jsonPath("$[1].childCount").value(1));
+    }
+
+    @Test
+    void 새_반을_생성하면_201과_반정보를_반환한다() throws Exception {
+        mockMvc.perform(post("/api/v1/classrooms").header("Authorization", "Bearer " + tokenA)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"별빛반\",\"year\":2026}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.name").value("별빛반"))
+                .andExpect(jsonPath("$.year").value(2026))
+                .andExpect(jsonPath("$.startDate").value("2026-03-02")) // 학년도 3월 2일 자동
+                .andExpect(jsonPath("$.childCount").value(0));
+
+        // 목록에도 추가됨(교사A: 기존 2 + 1 = 3)
+        mockMvc.perform(get("/api/v1/classrooms").header("Authorization", "Bearer " + tokenA))
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void 같은_학년도_같은_이름_반은_400_VALIDATION_FAILED() throws Exception {
+        mockMvc.perform(post("/api/v1/classrooms").header("Authorization", "Bearer " + tokenA)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"햇살반\",\"year\":2026}")) // 이미 존재
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
     }
 
     @Test
