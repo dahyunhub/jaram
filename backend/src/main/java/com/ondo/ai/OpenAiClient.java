@@ -109,7 +109,9 @@ public class OpenAiClient implements AiClient {
     private Map<String, Object> buildBody(AiRequest req) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("model", model);
-        body.put("max_tokens", req.maxTokens());
+        // max_completion_tokens: 신표준 파라미터. 구형(max_tokens)은 신형 모델(gpt-5.x 등)에서 거부됨.
+        // gpt-4.1 등 구형도 이 키를 수용하므로 단일 키로 통일한다.
+        body.put("max_completion_tokens", req.maxTokens());
         body.put("messages", List.of(
                 Map.of("role", "system", "content", req.systemPrompt()),
                 Map.of("role", "user", "content", req.userPrompt())));
