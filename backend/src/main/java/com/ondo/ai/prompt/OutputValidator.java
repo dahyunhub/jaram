@@ -1,6 +1,7 @@
 package com.ondo.ai.prompt;
 
 import com.ondo.ai.dto.JournalAnalysisResult;
+import com.ondo.ai.dto.ReportAnalysisResult;
 import com.ondo.common.exception.AiAnalysisException;
 import com.ondo.common.exception.ErrorCode;
 import com.ondo.memo.domain.CurriculumArea;
@@ -30,6 +31,24 @@ public class OutputValidator {
         }
         validateAreas(result);
         validateMemoCoverage(result, expectedMemoIndices);
+    }
+
+    /**
+     * 개인평가 결과 검증(ai-integration-spec §4): summary non-blank + areas ≥1 + 각 area enum 유효 + text non-blank.
+     * 일지와 달리 5영역 강제·메모 커버리지 없음(관찰된 영역 subset). 위반 시 AI_OUTPUT_INVALID(1회 재요청은 ReportService 소유).
+     */
+    public void validateReport(ReportAnalysisResult result) {
+        if (result == null || result.summary() == null || result.summary().isBlank()) {
+            throw invalid();
+        }
+        if (result.areas() == null || result.areas().isEmpty()) {
+            throw invalid();
+        }
+        for (ReportAnalysisResult.AreaText area : result.areas()) {
+            if (area.area() == null || area.text() == null || area.text().isBlank()) {
+                throw invalid();
+            }
+        }
     }
 
     private void validateAreas(JournalAnalysisResult result) {

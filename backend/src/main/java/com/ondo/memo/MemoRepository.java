@@ -28,6 +28,20 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
                                    @Param("start") LocalDateTime start,
                                    @Param("end") LocalDateTime end);
 
+    /**
+     * 개인평가 묶음(Story 4.1): 특정 아이의 기간 [start, end) 메모 전체(soft delete 제외 — @SQLRestriction).
+     * id 오름차순(렌더 안정성). findClassroomBundle 의 아이 단위 버전.
+     */
+    @Query("""
+            SELECT m FROM Memo m
+            WHERE m.childId = :childId
+              AND m.createdAt >= :start AND m.createdAt < :end
+            ORDER BY m.id ASC
+            """)
+    List<Memo> findChildBundle(@Param("childId") Long childId,
+                               @Param("start") LocalDateTime start,
+                               @Param("end") LocalDateTime end);
+
     /** 타임라인: 특정 영역 필터(최신순). */
     List<Memo> findByChildIdAndCurriculumAreaOrderByCreatedAtDesc(Long childId, CurriculumArea area);
 

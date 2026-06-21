@@ -18,17 +18,46 @@ import java.util.List;
 public class PromptTemplateLoader {
 
     private static final String JOURNAL_TEMPLATE = "prompts/journal.txt";
+    private static final String REPORT_TEMPLATE = "prompts/child-report.txt";
 
     /** 고정 system 프롬프트(누리 5영역·놀이 제안·또래 상호작용·교사 발문·출력 형식 강제). 시작 시 1회 로드. */
     private final String journalSystemPrompt;
+    /** 개인평가 고정 system 프롬프트(관찰된 영역 subset·출력 형식 강제). 시작 시 1회 로드. */
+    private final String reportSystemPrompt;
 
     public PromptTemplateLoader() {
         this.journalSystemPrompt = load(JOURNAL_TEMPLATE);
+        this.reportSystemPrompt = load(REPORT_TEMPLATE);
     }
 
     /** 일지 분석 system 프롬프트(고정 템플릿). */
     public String journalSystemPrompt() {
         return journalSystemPrompt;
+    }
+
+    /** 개인평가 system 프롬프트(고정 템플릿). */
+    public String reportSystemPrompt() {
+        return reportSystemPrompt;
+    }
+
+    /**
+     * 한 아이의 기간 관찰 메모 묶음을 평가용 user 프롬프트로 렌더. 항목 제시 방식은 일지와 동일하나
+     * 도입부가 '기간 개인 관찰 평가'용이다(평가는 메모 영역 분류 없음). 빈 리스트는 프로그래밍 오류로 거절.
+     */
+    public String renderReportMemos(List<MemoPromptInput> memos) {
+        if (memos == null || memos.isEmpty()) {
+            throw new IllegalArgumentException("렌더할 메모가 없습니다(평가 경로 전제: 비어있지 않은 메모 묶음).");
+        }
+        StringBuilder sb = new StringBuilder(
+                "아래는 한 아이에 대해 일정 기간 동안 기록한 관찰 메모입니다. 이를 바탕으로 개인 관찰 평가를 작성해 주세요.\n");
+        for (MemoPromptInput m : memos) {
+            sb.append('\n').append('[').append(m.index()).append(']');
+            appendField(sb, " 놀이: ", m.playActivity());
+            appendField(sb, " / 상호작용: ", m.interaction());
+            appendField(sb, " / 태도: ", m.attitude());
+            appendField(sb, " / 메모: ", m.content());
+        }
+        return sb.toString();
     }
 
     /**
