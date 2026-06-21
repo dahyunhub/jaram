@@ -36,6 +36,13 @@ public class ChildController {
         return childService.getChildren(teacherId, classroomId);
     }
 
+    /** 숨긴 아이(soft delete) 명단 — 기록 참고용. */
+    @GetMapping("/classrooms/{classroomId}/children/hidden")
+    public List<ChildResponse> getHiddenChildren(@AuthenticationPrincipal Long teacherId,
+                                                 @PathVariable Long classroomId) {
+        return childService.getHiddenChildren(teacherId, classroomId);
+    }
+
     @PostMapping("/classrooms/{classroomId}/children")
     public ResponseEntity<ChildResponse> registerChild(@AuthenticationPrincipal Long teacherId,
                                                         @PathVariable Long classroomId,
@@ -56,5 +63,12 @@ public class ChildController {
                                             @PathVariable Long childId) {
         childService.deleteChild(teacherId, childId);
         return ResponseEntity.noContent().build();
+    }
+
+    /** 숨김 해제(복원) — 명단에서 숨긴 아이를 다시 활성화. */
+    @PostMapping("/children/{childId}/restore")
+    public ChildResponse restoreChild(@AuthenticationPrincipal Long teacherId,
+                                      @PathVariable Long childId) {
+        return childService.restoreChild(teacherId, childId);
     }
 }

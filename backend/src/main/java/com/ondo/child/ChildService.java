@@ -31,6 +31,14 @@ public class ChildService {
                 .toList();
     }
 
+    /** 숨긴 아이(soft delete) 명단 — 기록 참고용. 반 소유권 검증. */
+    public List<ChildResponse> getHiddenChildren(Long teacherId, Long classroomId) {
+        verifyClassroomOwnership(teacherId, classroomId);
+        return childRepository.findHiddenByClassroomId(classroomId).stream()
+                .map(ChildResponse::from)
+                .toList();
+    }
+
     @Transactional
     public ChildResponse registerChild(Long teacherId, Long classroomId, ChildRequest request) {
         verifyClassroomOwnership(teacherId, classroomId);
@@ -51,6 +59,19 @@ public class ChildService {
     public void deleteChild(Long teacherId, Long childId) {
         Child child = findOwnedChild(teacherId, childId);
         child.softDelete();
+    }
+
+    /** 숨김 해제(복원). 숨긴 아이는 @SQLRestriction 때문에 일반 조회로 안 잡혀 네이티브로 소유권 확인 후 복원한다. */
+    @Transactional
+    public ChildResponse restoreChild(Long teacherId, Long childId) {
+        Child child = childRepository.findByIdIncludingDeleted(childId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CHILD_NOT_FOUND));
+        classroomRepository.findByIdAndTeacherId(child.getClassroomId(), teacherId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CHILD_NOT_FOUND));
+        childRepository.restoreById(childId, java.time.LocalDateTime.now(java.time.ZoneOffset.UTC));
+        return childRepository.findById(childId)
+                .map(ChildResponse::from)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CHILD_NOT_FOUND));
     }
 
     private void verifyClassroomOwnership(Long teacherId, Long classroomId) {

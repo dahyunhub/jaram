@@ -128,6 +128,53 @@ class ChildIntegrationTest extends IntegrationTestSupport {
     }
 
     @Test
+    void 숨긴_아이_명단은_삭제된_아이만_반환한다() throws Exception {
+        register("박서연");
+        register("김민준");
+        Long parkId = childRepository.findByClassroomIdOrderByNameAscIdAsc(classroomAId).stream()
+                .filter(c -> c.getName().equals("박서연")).findFirst().orElseThrow().getId();
+        mockMvc.perform(delete("/api/v1/children/{id}", parkId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isNoContent());
+
+        // 활성 명단엔 김민준만, 숨긴 명단엔 박서연만
+        mockMvc.perform(get("/api/v1/classrooms/{id}/children", classroomAId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("김민준"));
+        mockMvc.perform(get("/api/v1/classrooms/{id}/children/hidden", classroomAId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("박서연"));
+    }
+
+    @Test
+    void 숨긴_아이를_복원하면_다시_명단에_나타난다() throws Exception {
+        register("박서연");
+        Long parkId = childRepository.findByClassroomIdOrderByNameAscIdAsc(classroomAId).getFirst().getId();
+        mockMvc.perform(delete("/api/v1/children/{id}", parkId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isNoContent());
+
+        // 복원
+        mockMvc.perform(post("/api/v1/children/{id}/restore", parkId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("박서연"));
+
+        // 활성 명단에 복귀, 숨긴 명단엔 없음
+        mockMvc.perform(get("/api/v1/classrooms/{id}/children", classroomAId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("박서연"));
+        mockMvc.perform(get("/api/v1/classrooms/{id}/children/hidden", classroomAId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void 타_교사_아이는_복원할_수_없다_404() throws Exception {
+        // 교사A 토큰으로 교사B 소유 아이(childBId) 복원 시도 → 소유권 검증 실패
+        mockMvc.perform(post("/api/v1/children/{id}/restore", childBId).header("Authorization", "Bearer " + tokenA))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("CHILD_NOT_FOUND"));
+    }
+
+    @Test
     void 삭제된_아이의_alias는_재사용되지_않는다() throws Exception {
         register("박서연");   // 아이A
         Long parkId = childRepository.findByClassroomIdOrderByNameAscIdAsc(classroomAId).getFirst().getId();
