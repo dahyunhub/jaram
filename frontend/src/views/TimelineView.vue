@@ -10,6 +10,7 @@ import AppIcon from '../components/AppIcon.vue'
 import NuriChip from '../components/NuriChip.vue'
 import SproutLoader from '../components/SproutLoader.vue'
 import ChildFormModal from '../components/ChildFormModal.vue'
+import ReportPanel from '../components/ReportPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -103,12 +104,8 @@ onMounted(reload)
           </div>
           <button class="icbtn" @click="editChild = true" aria-label="정보 수정"><AppIcon name="dots" :size="20" /></button>
         </div>
-        <!-- 개인 관찰평가 (Epic 4 예정) -->
-        <div class="eval-soon" style="margin-top:22px">
-          <span class="eval-ic"><AppIcon name="me" :size="17" /></span>
-          <span class="eval-t">개인 관찰평가</span>
-          <span class="eval-badge">Epic 4 예정</span>
-        </div>
+        <!-- 개인 관찰평가 (Epic 4) -->
+        <ReportPanel v-if="childId" :child-id="childId" :child-name="child?.name || '아이'" style="margin-top:22px" />
       </div>
 
       <div class="right-pane">
@@ -191,11 +188,7 @@ onMounted(reload)
           </RouterLink>
         </div>
         <template v-else>
-          <div class="eval-soon">
-            <span class="eval-ic"><AppIcon name="me" :size="17" /></span>
-            <span class="eval-t">개인 관찰평가</span>
-            <span class="eval-badge">Epic 4 예정</span>
-          </div>
+          <ReportPanel v-if="childId" :child-id="childId" :child-name="child?.name || '아이'" style="margin-bottom:16px" />
           <div class="filter-bar">
             <div class="filter-title">관찰 기록 타임라인</div>
             <div class="chips">
@@ -269,10 +262,6 @@ onMounted(reload)
 .err { color: var(--warn); font-weight: 600; }
 .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; min-height: 320px; }
 .empty-d { font-size: 16px; color: var(--text-sub); margin-top: 8px; line-height: 1.5; }
-.eval-soon { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); margin-bottom: 16px; }
-.eval-ic { width: 28px; height: 28px; border-radius: 9px; background: var(--brand-300); color: var(--text); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
-.eval-t { font-size: 14.5px; font-weight: 800; color: var(--text); }
-.eval-badge { margin-left: auto; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--surface-soft); color: var(--text-faint); }
 .filter-bar { position: sticky; top: 0; background: var(--bg); padding-bottom: 12px; margin-bottom: 4px; z-index: 2; }
 .filter-title { font-size: 13px; font-weight: 800; color: var(--text-sub); margin-bottom: 10px; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }

@@ -1,9 +1,10 @@
 <script setup>
 // 일지·분석 허브 + 하루 일지 생성/검토 플로우(Epic 3, Story 3.5~3.7 연결).
 // 백엔드: POST /journals/analyze · GET /journals?classroomId&date · PUT /journals/{id} · POST /journals/{id}/analyze
-// 한 아이 분석(A)은 Epic 4 범위라 아직 안내만 한다. "반 일지 목록" 전용 엔드포인트는 없어
+// 한 아이 분석(A·개인평가, Epic 4)은 아이별 화면(타임라인)에 있어 아이 목록으로 보낸다.
 // 허브의 최근 목록은 '오늘 일지' 단건만 노출한다(MVP, 옵션 A).
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { api, ApiError } from '../lib/api'
 import { session } from '../stores/session'
 import { useViewport } from '../lib/useViewport'
@@ -13,7 +14,11 @@ import NuriChip from '../components/NuriChip.vue'
 import SproutLoader from '../components/SproutLoader.vue'
 
 const { isDesktop } = useViewport()
+const router = useRouter()
 const classroomId = session.classroom?.id
+
+// 한 아이 분석(개인평가)은 아이별 화면(타임라인)에 있다 → 아이 목록에서 선택.
+function goReports() { router.push({ name: 'children' }) }
 
 function isoToday() {
   const d = new Date()
@@ -171,7 +176,6 @@ async function confirmJournal() {
 }
 
 function backToHub() { view.value = 'hub'; editing.value = false }
-function soon() { showToast('한 아이 분석은 곧 제공돼요 (Epic 4 준비 중)') }
 
 onMounted(loadExisting)
 onBeforeUnmount(() => clearTimeout(toastTimer))
@@ -199,11 +203,11 @@ onBeforeUnmount(() => clearTimeout(toastTimer))
 
         <div class="ask">어떤 걸 분석할까요?</div>
         <div class="analysis" :class="{ dt: isDesktop }">
-          <button class="abig" @click="soon">
+          <button class="abig" @click="goReports">
             <div class="ab-top"><span class="ab-ic" style="background:rgba(201,168,232,.3)"><AppIcon name="me" :size="24" /></span>
               <div><div class="ab-t"><span class="ab-id">A</span>한 아이 분석</div><div class="ab-sub">개인 관찰 평가</div></div></div>
             <div class="ab-desc">한 아이의 기록을 모아 상담·발달평가용 관찰 평가를 만들어요.</div>
-            <div class="ab-go">곧 제공 <span class="ab-badge">Epic 4</span></div>
+            <div class="ab-go">아이 선택하기 <AppIcon name="chevR" :size="16" /></div>
           </button>
           <button class="abig" @click="startAnalyze">
             <div class="ab-top"><span class="ab-ic" style="background:var(--brand-300)"><AppIcon name="journal" :size="24" /></span>
@@ -361,7 +365,6 @@ onBeforeUnmount(() => clearTimeout(toastTimer))
 .ab-sub { font-size: 12.5px; color: var(--text-sub); font-weight: 600; }
 .ab-desc { font-size: 13.5px; color: var(--text-sub); line-height: 1.55; }
 .ab-go { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 800; color: var(--text-faint); }
-.ab-badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--surface-soft); color: var(--text-faint); }
 
 .recent-h { margin-bottom: 14px; }
 .recent-empty {
