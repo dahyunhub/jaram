@@ -82,4 +82,16 @@ class RegisterIntegrationTest extends IntegrationTestSupport {
                 .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
                 .andExpect(jsonPath("$.errors[0].field").value("password"));
     }
+
+    @Test
+    void 비밀번호가_72바이트를_초과하면_400_VALIDATION_FAILED() throws Exception {
+        String tooLong = "a".repeat(73); // 73 bytes(ASCII) > 72
+
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new RegisterRequest(NAME, EMAIL, tooLong))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.errors[0].field").value("password"));
+    }
 }

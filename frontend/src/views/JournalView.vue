@@ -31,6 +31,7 @@ const editContent = reactive({})
 const showOverwrite = ref(false)
 const errorMsg = ref('')
 const saving = ref(false)
+const analyzing = ref(false) // 생성·재분석 in-flight 가드(중복 클릭 방지)
 const toast = ref('')
 let toastTimer = null
 
@@ -81,6 +82,8 @@ function openDraft() {
 // 오늘 메모 → 일지 생성. 이미 있으면 열기만.
 async function startAnalyze() {
   if (journal.value) { openDraft(); return }
+  if (analyzing.value) return // 중복 클릭 가드
+  analyzing.value = true
   view.value = 'loading'
   try {
     const res = await api.post('/journals/analyze', { classroomId, date: todayIso })
@@ -88,6 +91,8 @@ async function startAnalyze() {
     view.value = 'draft'
   } catch (e) {
     await handleAnalyzeError(e)
+  } finally {
+    analyzing.value = false
   }
 }
 
@@ -106,6 +111,8 @@ function askReanalyze() { showOverwrite.value = true }
 
 async function doReanalyze() {
   showOverwrite.value = false
+  if (analyzing.value) return // 중복 클릭 가드
+  analyzing.value = true
   view.value = 'loading'
   try {
     const res = await api.post(`/journals/${journal.value.id}/analyze`)
@@ -114,6 +121,8 @@ async function doReanalyze() {
     view.value = 'draft'
   } catch (e) {
     await handleAnalyzeError(e)
+  } finally {
+    analyzing.value = false
   }
 }
 
