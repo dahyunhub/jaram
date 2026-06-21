@@ -17,6 +17,7 @@ const props = defineProps({
 const view = ref('list')
 const reports = ref([])
 const detail = ref(null)
+const lastDetailId = ref(null)
 const loading = ref(true)
 const error = ref('')
 const showCreate = ref(false)
@@ -46,6 +47,7 @@ async function loadList() {
 
 async function openDetail(id) {
   view.value = 'detail'
+  lastDetailId.value = id
   detail.value = null
   error.value = ''
   try {
@@ -104,7 +106,10 @@ onMounted(loadList)
 
     <!-- 상세 -->
     <template v-else-if="view === 'detail'">
-      <p v-if="error" class="rp-err">{{ error }}</p>
+      <div v-if="error" class="rp-banner">
+        <span><AppIcon name="heart" :size="16" :stroke="2" /> {{ error }}</span>
+        <button class="rp-retry" @click="openDetail(lastDetailId)"><AppIcon name="swap" :size="14" /> 다시 시도</button>
+      </div>
       <template v-else-if="detail">
         <div class="rp-meta">
           <span class="rp-kind" :class="isAuto(detail) ? 'auto' : 'manual'">{{ isAuto(detail) ? '월말 자동' : '수동 생성' }}</span>
@@ -124,7 +129,7 @@ onMounted(loadList)
 
     <!-- 목록 -->
     <template v-else>
-      <p v-if="error" class="rp-err">{{ error }}</p>
+      <div v-if="error" class="rp-banner"><span><AppIcon name="heart" :size="16" :stroke="2" /> {{ error }}</span></div>
       <p v-if="loading" class="rp-muted">불러오는 중…</p>
       <template v-else>
         <div v-if="reports.length" class="rp-list">
@@ -140,7 +145,11 @@ onMounted(loadList)
             <AppIcon name="chevR" :size="18" style="color:var(--text-faint);flex:0 0 auto" />
           </button>
         </div>
-        <div v-else class="rp-empty">메모가 쌓이면 개인 관찰평가를 만들 수 있어요.</div>
+        <div v-else-if="!error" class="rp-empty">
+          <span class="rp-empty-ic"><AppIcon name="me" :size="22" /></span>
+          <div class="rp-empty-t">아직 만든 평가가 없어요</div>
+          <div class="rp-empty-d">위 <b>생성</b>을 눌러 {{ childName }}의 첫 관찰평가를 만들어 보세요.</div>
+        </div>
       </template>
     </template>
 
@@ -177,10 +186,15 @@ onMounted(loadList)
 .rp-item { display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 13px; background: var(--surface-soft); cursor: pointer; border: none; font-family: inherit; text-align: left; width: 100%; }
 .rp-item-ic { width: 34px; height: 34px; border-radius: 10px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: var(--surface); color: var(--text-sub); }
 .rp-item-body { min-width: 0; flex: 1; }
-.rp-item-top { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
-.rp-item-title { font-size: 14px; font-weight: 800; }
-.rp-item-sub { display: block; font-size: 12px; color: var(--text-sub); margin-top: 3px; white-space: nowrap; }
-.rp-empty { font-size: 13px; color: var(--text-faint); line-height: 1.5; padding: 6px 2px; }
+.rp-item-top { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.rp-item-title { font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.rp-item-sub { display: block; font-size: 12px; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.rp-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 22px 12px; }
+.rp-empty-ic { width: 40px; height: 40px; border-radius: 12px; background: var(--surface-soft); color: var(--text-faint); display: flex; align-items: center; justify-content: center; }
+.rp-empty-t { font-size: 14px; font-weight: 800; color: var(--text-sub); margin-top: 2px; }
+.rp-empty-d { font-size: 12.5px; color: var(--text-faint); line-height: 1.55; }
+.rp-empty-d b { color: var(--brand-700); }
 
 .rp-kind { font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
 .rp-kind.manual { background: var(--brand-300); color: #8a6a1f; }
@@ -199,10 +213,16 @@ onMounted(loadList)
 .rp-text { font-size: 14px; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
 
 .rp-muted { color: var(--text-sub); font-size: 13px; }
-.rp-err { color: var(--warn); font-size: 13px; font-weight: 600; line-height: 1.5; }
+.rp-banner { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: rgba(240, 140, 125, .12); border: 1px solid rgba(240, 140, 125, .4); border-radius: 12px; padding: 11px 13px; margin-bottom: 12px; }
+.rp-banner span { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.5; flex: 1; min-width: 0; }
+.rp-banner span :deep(svg) { color: var(--warn); flex: 0 0 auto; }
+.rp-retry { display: flex; align-items: center; gap: 4px; border: none; background: var(--surface); border-radius: 999px; padding: 6px 11px; font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--text-sub); cursor: pointer; flex: 0 0 auto; }
 
-.rp-mask { position: fixed; inset: 0; z-index: 60; background: rgba(40, 30, 20, .36); display: flex; align-items: center; justify-content: center; padding: 24px; }
-.rp-modal { background: var(--surface); border-radius: 22px; padding: 22px 22px 24px; width: 100%; max-width: 420px; box-shadow: var(--shadow-lg); }
+/* 데스크톱: 중앙 모달 / 모바일: 바텀시트(다른 모달과 일관) */
+.rp-mask { position: fixed; inset: 0; z-index: 60; background: rgba(40, 30, 20, .36); display: flex; align-items: flex-end; justify-content: center; }
+@media (min-width: 520px) { .rp-mask { align-items: center; padding: 24px; } }
+.rp-modal { background: var(--surface); border-radius: 22px 22px 0 0; padding: 22px 22px 28px; width: 100%; max-width: 460px; box-shadow: var(--shadow-lg); }
+@media (min-width: 520px) { .rp-modal { border-radius: 22px; padding: 22px 22px 24px; max-width: 420px; } }
 .rp-m-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .rp-m-title { font-size: 16.5px; font-weight: 800; }
 .rp-m-x { margin-left: auto; border: none; background: var(--surface-soft); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text-sub); cursor: pointer; flex: 0 0 auto; }
