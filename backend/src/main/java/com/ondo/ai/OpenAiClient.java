@@ -1,5 +1,6 @@
 package com.ondo.ai;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ondo.ai.dto.AiRequest;
 import com.ondo.common.exception.AiAnalysisException;
 import com.ondo.common.exception.ErrorCode;
@@ -124,7 +125,8 @@ public class OpenAiClient implements AiClient {
         if (resp == null || resp.choices() == null || resp.choices().isEmpty()) {
             throw new AiAnalysisException(ErrorCode.AI_ANALYSIS_FAILED);
         }
-        OpenAiChatResponse.Message msg = resp.choices().get(0).message();
+        OpenAiChatResponse.Choice choice = resp.choices().get(0);
+        OpenAiChatResponse.Message msg = choice.message();
         if (msg == null) {
             throw new AiAnalysisException(ErrorCode.AI_ANALYSIS_FAILED);
         }
@@ -134,6 +136,16 @@ public class OpenAiClient implements AiClient {
         }
         if (msg.content() == null || msg.content().isBlank()) {
             throw new AiAnalysisException(ErrorCode.AI_ANALYSIS_FAILED);
+        }
+        // 정상처럼 보이는 content 라도 비정상 종료(finish_reason != stop)면 신뢰 불가.
+        // length 절단은 깨진 JSON 으로 파서가 잡기도 하지만, 여기서 명시적으로 차단한다.
+        // (finish_reason 미제공 응답은 허용 — 하위 호환)
+        String finish = choice.finishReason();
+        if (finish != null && !finish.isBlank() && !"stop".equals(finish)) {
+            log.warn("AI 비정상 종료(finish_reason={}) — content 신뢰 불가", finish);
+            // length(절단)은 불완전 출력 → 1회 재요청 대상(AI_OUTPUT_INVALID), 그 외는 재요청 무의미
+            throw new AiAnalysisException(
+                    "length".equals(finish) ? ErrorCode.AI_OUTPUT_INVALID : ErrorCode.AI_ANALYSIS_FAILED);
         }
         return msg.content();
     }
@@ -160,7 +172,7 @@ public class OpenAiClient implements AiClient {
 
     /** OpenAI Chat Completions 응답(필요 필드만). 미사용 필드는 무시. */
     record OpenAiChatResponse(List<Choice> choices) {
-        record Choice(Message message) {}
+        record Choice(Message message, @JsonProperty("finish_reason") String finishReason) {}
         record Message(String content, String refusal) {}
     }
 }

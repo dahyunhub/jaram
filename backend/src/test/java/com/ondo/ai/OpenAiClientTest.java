@@ -56,6 +56,35 @@ class OpenAiClientTest {
     }
 
     @Test
+    void finish_reason_stop_은_정상_반환() {
+        server.enqueue(json(200, "{\"choices\":[{\"finish_reason\":\"stop\",\"message\":{\"content\":\"{\\\"summary\\\":\\\"ok\\\"}\"}}]}"));
+
+        String out = client.complete(req());
+
+        assertThat(out).isEqualTo("{\"summary\":\"ok\"}");
+    }
+
+    @Test
+    void finish_reason_length_절단은_AI_OUTPUT_INVALID() {
+        // content 가 있어 보여도 length 절단이면 신뢰 불가 → 1회 재요청 대상 코드
+        server.enqueue(json(200, "{\"choices\":[{\"finish_reason\":\"length\",\"message\":{\"content\":\"{\\\"summary\\\":\\\"잘림\"}}]}"));
+
+        AiAnalysisException ex = catchThrowableOfType(() -> client.complete(req()), AiAnalysisException.class);
+
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.AI_OUTPUT_INVALID);
+        assertThat(server.getRequestCount()).isEqualTo(1); // 클라이언트 자체는 재시도 안 함(재요청은 상위 오케스트레이션)
+    }
+
+    @Test
+    void finish_reason_content_filter_는_AI_ANALYSIS_FAILED() {
+        server.enqueue(json(200, "{\"choices\":[{\"finish_reason\":\"content_filter\",\"message\":{\"content\":\"{\\\"summary\\\":\\\"ok\\\"}\"}}]}"));
+
+        AiAnalysisException ex = catchThrowableOfType(() -> client.complete(req()), AiAnalysisException.class);
+
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.AI_ANALYSIS_FAILED);
+    }
+
+    @Test
     void 거절_refusal_응답은_AI_ANALYSIS_FAILED() {
         server.enqueue(json(200, "{\"choices\":[{\"message\":{\"refusal\":\"거절\",\"content\":null}}]}"));
 
