@@ -49,9 +49,15 @@ function go(name) { router.push({ name }) }
           <AppIcon name="chevR" :size="24" />
         </div>
         <div class="jr-card soon-card">
-          <div class="soon-h">곧 제공돼요</div>
-          <div class="soon-row"><span class="soon-ic"><AppIcon name="sparkle" :size="18" /></span> AI 보육일지 <span class="soon-b">Epic 3</span></div>
-          <div class="soon-row"><span class="soon-ic"><AppIcon name="me" :size="18" /></span> 개인 관찰평가 <span class="soon-b">Epic 4</span></div>
+          <div class="soon-h">AI 분석</div>
+          <button class="soon-row act" @click="go('journal')">
+            <span class="soon-ic"><AppIcon name="sparkle" :size="18" /></span> AI 일지
+            <AppIcon name="chevR" :size="16" class="soon-arrow" />
+          </button>
+          <button class="soon-row act" @click="go('children')">
+            <span class="soon-ic"><AppIcon name="me" :size="18" /></span> 개인 관찰평가
+            <AppIcon name="chevR" :size="16" class="soon-arrow" />
+          </button>
         </div>
       </div>
     </div>
@@ -90,16 +96,16 @@ function go(name) { router.push({ name }) }
         <AppIcon name="chevR" :size="22" />
       </button>
 
-      <div class="soon-label">곧 추가돼요</div>
+      <div class="soon-label">AI 분석</div>
       <div class="soon-grid">
-        <div class="soon-mini">
+        <button class="soon-mini act" @click="go('journal')">
           <span class="soon-ic"><AppIcon name="sparkle" :size="22" /></span>
-          <span class="soon-t">AI 보육일지</span><span class="soon-b">Epic 3</span>
-        </div>
-        <div class="soon-mini">
+          <span class="soon-t">AI 일지</span>
+        </button>
+        <button class="soon-mini act" @click="go('children')">
           <span class="soon-ic"><AppIcon name="me" :size="22" /></span>
-          <span class="soon-t">개인 관찰평가</span><span class="soon-b">Epic 4</span>
-        </div>
+          <span class="soon-t">개인 관찰평가</span>
+        </button>
       </div>
     </div>
 
@@ -143,8 +149,11 @@ function go(name) { router.push({ name }) }
 .soon-card { padding: 18px; }
 .soon-h { font-size: 14px; font-weight: 800; margin-bottom: 12px; }
 .soon-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; font-size: 14.5px; font-weight: 700; color: var(--text-sub); }
+.soon-row.act { width: 100%; border: none; background: transparent; font-family: inherit; cursor: pointer; padding: 10px 6px; border-radius: 12px; color: var(--text); transition: background .12s; }
+.soon-row.act:hover { background: var(--surface-soft); }
+.soon-arrow { margin-left: auto; color: var(--text-faint); }
 .soon-row .soon-ic { width: 34px; height: 34px; border-radius: 11px; background: var(--surface-soft); color: var(--text-sub); display: flex; align-items: center; justify-content: center; }
-.soon-b { margin-left: auto; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--surface-soft); color: var(--text-faint); }
+.soon-row.act .soon-ic { background: var(--brand-100); color: var(--brand-700); }
 
 /* 모바일 */
 .home-m { display: flex; flex-direction: column; position: relative; }
@@ -163,9 +172,12 @@ function go(name) { router.push({ name }) }
   display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 18px;
   background: var(--surface); border: 1.5px solid var(--hair);
 }
+.soon-mini.act { cursor: pointer; font-family: inherit; text-align: left; transition: border-color .12s, background .12s; }
+.soon-mini.act:hover { border-color: var(--brand-500); background: var(--brand-100); }
+.soon-mini.act .soon-ic { background: var(--brand-100); color: var(--brand-700); }
 .soon-mini .soon-ic { width: 40px; height: 40px; border-radius: 12px; background: var(--surface-soft); color: var(--text-sub); display: flex; align-items: center; justify-content: center; }
 .soon-t { font-size: 14.5px; font-weight: 800; color: var(--text-sub); }
-.soon-b { align-self: flex-start; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--surface-soft); color: var(--text-faint); }
+.soon-mini.act .soon-t { color: var(--text); }
 .fab {
   position: fixed; right: 20px; bottom: 86px; z-index: 9; border: none; cursor: pointer; font-family: inherit;
   display: inline-flex; align-items: center; gap: 8px; height: 56px; padding: 0 22px 0 18px;

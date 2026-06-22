@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 
 /**
- * 보육일지 API(Epic 3). 정본: api-spec §5.
+ * 일지 API(Epic 3). 정본: api-spec §5.
  */
 @RestController
 @RequestMapping("/api/v1/journals")

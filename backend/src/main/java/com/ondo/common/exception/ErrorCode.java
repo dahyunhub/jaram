@@ -24,13 +24,13 @@ public enum ErrorCode {
     CLASSROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "반을 찾을 수 없어요."),
     CHILD_NOT_FOUND(HttpStatus.NOT_FOUND, "아이를 찾을 수 없어요."),
     MEMO_NOT_FOUND(HttpStatus.NOT_FOUND, "메모를 찾을 수 없어요."),
-    JOURNAL_NOT_FOUND(HttpStatus.NOT_FOUND, "보육일지를 찾을 수 없어요."),
+    JOURNAL_NOT_FOUND(HttpStatus.NOT_FOUND, "일지를 찾을 수 없어요."),
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "평가를 찾을 수 없어요."),
 
     // CONFLICT / STATE
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 가입된 이메일이에요."),
     ANALYSIS_IN_PROGRESS(HttpStatus.CONFLICT, "이미 분석이 진행 중이에요. 잠시 후 다시 시도해 주세요."),
-    JOURNAL_ALREADY_EXISTS(HttpStatus.CONFLICT, "그 날짜의 보육일지가 이미 있어요. 재분석을 이용해 주세요."),
+    JOURNAL_ALREADY_EXISTS(HttpStatus.CONFLICT, "그 날짜의 일지가 이미 있어요. 재분석을 이용해 주세요."),
     DATA_CONFLICT(HttpStatus.CONFLICT, "요청이 현재 상태와 충돌해요. 잠시 후 다시 시도해 주세요."),
     REPORT_NO_MEMO(HttpStatus.UNPROCESSABLE_ENTITY, "해당 기간에 작성된 메모가 없어요."),
 

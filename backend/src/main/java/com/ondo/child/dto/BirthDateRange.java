@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 /**
  * 생년월일 하한 검증. 미래/오늘은 {@code @Past} 가 처리하고, 여기서는 비현실적으로 과거인 값을 거른다.
- * 보육 도메인상 유치원 연령(기본 12년) 범위를 벗어나면 검증 실패.
+ * 교육 도메인상 유치원 연령(기본 12년) 범위를 벗어나면 검증 실패.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

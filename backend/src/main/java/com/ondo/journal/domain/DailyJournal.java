@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * 하루치 보육일지(FR-3). 테이블 daily_journal 은 Flyway V1 정본 — 매핑만 한다(DDL 생성 금지, ddl-auto=validate).
+ * 하루치 일지(FR-3). 테이블 daily_journal 은 Flyway V1 정본 — 매핑만 한다(DDL 생성 금지, ddl-auto=validate).
  * content 는 평탄화 5영역 JSON 문자열(ai-integration-spec §3). UNIQUE(teacher_id, classroom_id, journal_date).
  */
 @Entity

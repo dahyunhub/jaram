@@ -70,7 +70,7 @@ public class PromptTemplateLoader {
         if (memos == null || memos.isEmpty()) {
             throw new IllegalArgumentException("렌더할 메모가 없습니다(분석 경로 전제: 비어있지 않은 메모 묶음).");
         }
-        StringBuilder sb = new StringBuilder("아래는 오늘 하루 동안 기록한 관찰 메모입니다. 각 항목을 분석해 보육일지를 작성해 주세요.\n");
+        StringBuilder sb = new StringBuilder("아래는 오늘 하루 동안 기록한 관찰 메모입니다. 각 항목을 분석해 일지를 작성해 주세요.\n");
         for (MemoPromptInput m : memos) {
             sb.append('\n').append('[').append(m.index()).append(']');
             appendField(sb, " 놀이: ", m.playActivity());
