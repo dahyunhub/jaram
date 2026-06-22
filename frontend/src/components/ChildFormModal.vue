@@ -2,11 +2,13 @@
 import { reactive, ref } from 'vue'
 import { api, ApiError } from '../lib/api'
 import AppIcon from './AppIcon.vue'
+import Avatar from './Avatar.vue'
+import ImageCropper from './ImageCropper.vue'
 
 const props = defineProps({
   mode: { type: String, required: true },      // 'add' | 'edit'
   classroomId: { type: [Number, String], default: null }, // add 시 필요
-  child: { type: Object, default: null },       // edit 시 { id, name, birthDate, gender }
+  child: { type: Object, default: null },       // edit 시 { id, name, birthDate, gender, photoUpdatedAt }
 })
 const emit = defineEmits(['close', 'saved', 'deleted'])
 
@@ -19,6 +21,23 @@ const saving = ref(false)
 const deleting = ref(false)
 const error = ref('')
 
+// 프로필 사진(크롭) — 신규 크롭 blob 은 저장 시 업로드.
+const fileInput = ref(null)
+const cropFile = ref(null)
+const pendingBlob = ref(null)
+const pendingPreview = ref('')
+function pickFile(e) {
+  const f = e.target.files?.[0]
+  e.target.value = '' // 같은 파일 재선택 허용
+  if (f) cropFile.value = f
+}
+function onCropped(blob) {
+  pendingBlob.value = blob
+  if (pendingPreview.value) URL.revokeObjectURL(pendingPreview.value)
+  pendingPreview.value = URL.createObjectURL(blob)
+  cropFile.value = null
+}
+
 async function save() {
   error.value = ''
   if (!form.name.trim()) { error.value = '이름을 입력해 주세요.'; return }
@@ -26,10 +45,16 @@ async function save() {
   saving.value = true
   try {
     const body = { name: form.name.trim(), birthDate: form.birthDate, gender: form.gender }
+    let childId
     if (props.mode === 'add') {
-      await api.post(`/classrooms/${props.classroomId}/children`, body)
+      const created = await api.post(`/classrooms/${props.classroomId}/children`, body)
+      childId = created.id
     } else {
       await api.put(`/children/${props.child.id}`, body)
+      childId = props.child.id
+    }
+    if (pendingBlob.value) {
+      await api.putBinary(`/children/${childId}/photo`, pendingBlob.value, 'image/jpeg')
     }
     emit('saved')
   } catch (e) {
@@ -80,6 +105,17 @@ async function confirmDelete() {
           <button class="close" @click="emit('close')"><AppIcon name="x" :size="18" /></button>
         </div>
         <div class="fields">
+          <!-- 프로필 사진 -->
+          <div class="photo-row">
+            <img v-if="pendingPreview" class="jr-avatar jr-avatar--lg photo-prev" :src="pendingPreview" alt="미리보기" />
+            <Avatar v-else :name="form.name"
+                    :photo-url="mode === 'edit' && child?.id ? `/children/${child.id}/photo` : ''"
+                    :photo-key="mode === 'edit' ? (child?.photoUpdatedAt || '') : ''" size="lg" />
+            <button type="button" class="jr-btn jr-btn--secondary jr-btn--sm" @click="fileInput?.click()">
+              <AppIcon name="plus" :size="16" :stroke="2.6" /> {{ pendingPreview ? '사진 변경' : '사진 추가' }}
+            </button>
+            <input ref="fileInput" type="file" accept="image/*" class="file-hidden" @change="pickFile" />
+          </div>
           <div>
             <label class="jr-field-label">이름</label>
             <input v-model="form.name" class="jr-input" placeholder="아이 이름을 입력해주세요" />
@@ -110,6 +146,8 @@ async function confirmDelete() {
         </button>
       </template>
     </div>
+
+    <ImageCropper v-if="cropFile" :file="cropFile" @cropped="onCropped" @close="cropFile = null" />
   </div>
 </template>
 
@@ -119,6 +157,9 @@ async function confirmDelete() {
 .sheet { background: var(--surface); width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); border-radius: 26px 26px 0 0; padding: 22px 22px 28px; }
 @media (min-width: 520px) { .sheet { border-radius: 24px; padding: 26px 28px; } }
 .sheet-top { display: flex; align-items: center; margin-bottom: 16px; }
+.photo-row { display: flex; align-items: center; gap: 14px; }
+.photo-prev { object-fit: cover; }
+.file-hidden { display: none; }
 .close { margin-left: auto; border: none; background: var(--surface-soft); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: var(--text-sub); cursor: pointer; }
 .fields { display: flex; flex-direction: column; gap: 14px; }
 .sex { display: flex; gap: 8px; }

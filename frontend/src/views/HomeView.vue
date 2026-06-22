@@ -64,7 +64,8 @@ function go(name) { router.push({ name }) }
         {{ session.classroom?.name }} <AppIcon name="chevD" :size="16" :stroke="2.4" />
       </button>
       <span class="m-date">{{ today }}</span>
-      <Avatar :name="teacherName" size="sm" style="margin-left:auto" />
+      <Avatar :name="teacherName" size="sm" style="margin-left:auto"
+              photo-url="/teachers/me/photo" :photo-key="auth.teacher?.photoUpdatedAt || ''" />
     </header>
 
     <div class="screen m-body">

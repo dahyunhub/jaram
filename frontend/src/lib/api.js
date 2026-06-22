@@ -51,10 +51,44 @@ async function request(method, path, { body, auth: needAuth = true } = {}) {
   return data
 }
 
+// 인증 GET → Blob(이미지 등). 404 는 null(사진 없음), 401 은 로그아웃 처리.
+async function getBlob(path) {
+  const headers = {}
+  if (auth.token) headers.Authorization = `Bearer ${auth.token}`
+  const res = await fetch(BASE + path, { headers })
+  if (res.status === 401) {
+    auth.logout()
+    throw new ApiError(401, 'AUTH_UNAUTHENTICATED', '로그인이 필요해요.')
+  }
+  if (res.status === 404) return null
+  if (!res.ok) throw new ApiError(res.status, null, `요청 실패 (${res.status})`)
+  return res.blob()
+}
+
+// 바이너리(이미지) PUT — Content-Type 을 직접 지정해 raw 바이트 전송. 응답 JSON 반환.
+async function putBinary(path, blob, contentType) {
+  const headers = { 'Content-Type': contentType }
+  if (auth.token) headers.Authorization = `Bearer ${auth.token}`
+  const res = await fetch(BASE + path, { method: 'PUT', headers, body: blob })
+  if (res.status === 401) {
+    auth.logout()
+    throw new ApiError(401, 'AUTH_UNAUTHENTICATED', '로그인이 필요해요.')
+  }
+  const text = await res.text()
+  let data = null
+  if (text) { try { data = JSON.parse(text) } catch { data = text } }
+  if (!res.ok) {
+    throw new ApiError(res.status, data && data.code, (data && data.message) || `요청 실패 (${res.status})`, data)
+  }
+  return data
+}
+
 export const api = {
   get: (p, opts) => request('GET', p, opts),
   post: (p, body, opts) => request('POST', p, { ...opts, body }),
   put: (p, body, opts) => request('PUT', p, { ...opts, body }),
   patch: (p, body, opts) => request('PATCH', p, { ...opts, body }),
   del: (p, opts) => request('DELETE', p, opts),
+  getBlob,
+  putBinary,
 }

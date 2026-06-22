@@ -100,7 +100,7 @@ onBeforeUnmount(() => { if (navTimer) clearTimeout(navTimer) })
         <div class="pick-row" :class="{ dt: isDesktop }">
           <button v-for="c in children" :key="c.id" class="pick" :class="{ lg: isDesktop }" @click="selectedId = c.id">
             <span class="pick-ava" :class="{ on: c.id === selectedId }">
-              <Avatar :name="c.name" size="lg" />
+              <Avatar :name="c.name" size="lg" :photo-url="`/children/${c.id}/photo`" :photo-key="c.photoUpdatedAt || ''" />
               <span v-if="c.id === selectedId" class="pick-chk"><AppIcon name="check" :size="11" :stroke="3.4" /></span>
             </span>
             <span class="pick-name" :class="{ on: c.id === selectedId }">{{ c.name }}</span>
@@ -153,7 +153,8 @@ onBeforeUnmount(() => { if (navTimer) clearTimeout(navTimer) })
     <div v-if="openField !== null" class="overlay" :class="{ dt: isDesktop }" @click.self="openField = null">
       <div class="sheet" :class="{ dt: isDesktop }">
         <div class="sheet-top">
-          <Avatar :name="selectedChild?.name || '아이'" size="sm" />
+          <Avatar :name="selectedChild?.name || '아이'" size="sm"
+                  :photo-url="selectedChild ? `/children/${selectedChild.id}/photo` : ''" :photo-key="selectedChild?.photoUpdatedAt || ''" />
           <div class="sheet-title">
             <div class="t">{{ shortName(selectedChild?.name) }} · {{ FIELDS[openField].label }}</div>
             <div class="d">크게 보고 편하게 적어요</div>

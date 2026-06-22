@@ -2,12 +2,13 @@
 // 마이 — 프로필 · 반 전환 · 설정. (프로필수정/알림/내보내기/도움말은 추후)
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '../lib/api'
+import { api, ApiError } from '../lib/api'
 import { auth } from '../stores/auth'
 import { session } from '../stores/session'
 import { useViewport } from '../lib/useViewport'
 import Avatar from '../components/Avatar.vue'
 import AppIcon from '../components/AppIcon.vue'
+import ImageCropper from '../components/ImageCropper.vue'
 
 const router = useRouter()
 const { isDesktop } = useViewport()
@@ -43,6 +44,26 @@ function pickClass(c) {
   if (isNow(c)) router.replace({ name: 'home' })
 }
 function notReady(label) { toast.value = `${label}은 곧 제공돼요`; setTimeout(() => (toast.value = ''), 1600) }
+
+// 프로필 사진 — 파일 선택 → 크롭 → 업로드 → auth.teacher 갱신(아바타 즉시 반영).
+const fileInput = ref(null)
+const cropFile = ref(null)
+function pickPhoto(e) {
+  const f = e.target.files?.[0]
+  e.target.value = ''
+  if (f) cropFile.value = f
+}
+async function onCropped(blob) {
+  cropFile.value = null
+  try {
+    const res = await api.putBinary('/teachers/me/photo', blob, 'image/jpeg')
+    auth.updateTeacher({ photoUpdatedAt: res.photoUpdatedAt })
+    toast.value = '프로필 사진을 변경했어요'
+  } catch (e) {
+    toast.value = e instanceof ApiError ? e.message : '사진 변경에 실패했어요.'
+  }
+  setTimeout(() => (toast.value = ''), 1600)
+}
 function logout() {
   auth.logout()
   session.clear()
@@ -60,12 +81,17 @@ onMounted(() => {})
     <div :class="isDesktop ? 'me-col' : 'screen body'">
       <!-- 프로필 -->
       <div class="jr-card profile">
-        <Avatar :name="teacherName" size="lg" />
+        <button type="button" class="avatar-btn" @click="fileInput?.click()" aria-label="프로필 사진 변경">
+          <Avatar :name="teacherName" size="lg"
+                  photo-url="/teachers/me/photo" :photo-key="teacher.photoUpdatedAt || ''" />
+          <span class="cam"><AppIcon name="plus" :size="13" :stroke="2.8" /></span>
+        </button>
         <div class="p-info">
           <div class="p-name" :class="{ big: isDesktop }">{{ teacherName }} 선생님</div>
           <div class="p-email">{{ teacherEmail || '—' }}</div>
         </div>
-        <button class="jr-btn jr-btn--secondary jr-btn--sm" @click="notReady('프로필 수정')">프로필 수정</button>
+        <button class="jr-btn jr-btn--secondary jr-btn--sm" @click="fileInput?.click()">사진 변경</button>
+        <input ref="fileInput" type="file" accept="image/*" style="display:none" @change="pickPhoto" />
       </div>
 
       <!-- 지난 반 보는 중 배너 -->
@@ -137,10 +163,14 @@ onMounted(() => {})
         <div class="jr-toast">{{ toast }}</div>
       </div>
     </Transition>
+
+    <ImageCropper v-if="cropFile" :file="cropFile" @cropped="onCropped" @close="cropFile = null" />
   </div>
 </template>
 
 <style scoped>
+.avatar-btn { position: relative; border: none; background: transparent; padding: 0; cursor: pointer; flex: 0 0 auto; line-height: 0; }
+.cam { position: absolute; right: -2px; bottom: -2px; width: 22px; height: 22px; border-radius: 50%; background: var(--brand-500); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px var(--surface); }
 .me-m { display: flex; flex-direction: column; }
 /* 데스크톱: 제목+내용을 콘텐츠 실폭(560px) 한 컬럼으로 묶어 통째로 가운데 정렬 */
 .me-dt { max-width: 560px; }

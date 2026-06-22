@@ -7,6 +7,8 @@ import com.ondo.auth.dto.RegisterRequest;
 import com.ondo.auth.jwt.JwtProvider;
 import com.ondo.common.exception.BusinessException;
 import com.ondo.common.exception.ErrorCode;
+import com.ondo.photo.ProfilePhotoService;
+import com.ondo.photo.domain.OwnerKind;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +20,14 @@ public class AuthService {
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final ProfilePhotoService photoService;
 
-    public AuthService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
+    public AuthService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider,
+                       ProfilePhotoService photoService) {
         this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
+        this.photoService = photoService;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -58,6 +63,7 @@ public class AuthService {
                 accessToken,
                 "Bearer",
                 jwtProvider.getExpirationSeconds(),
-                new LoginResponse.TeacherSummary(teacher.getId(), teacher.getEmail(), teacher.getName()));
+                new LoginResponse.TeacherSummary(teacher.getId(), teacher.getEmail(), teacher.getName(),
+                        photoService.updatedAtOrNull(OwnerKind.TEACHER, teacher.getId())));
     }
 }

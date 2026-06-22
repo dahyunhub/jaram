@@ -29,6 +29,12 @@ export const auth = reactive({
     localStorage.setItem(TEACHER_KEY, JSON.stringify(teacher))
   },
 
+  // 교사 정보 부분 갱신(프로필 사진 등) — 세션(반 선택)은 건드리지 않는다.
+  updateTeacher(patch) {
+    this.teacher = { ...(this.teacher || {}), ...patch }
+    localStorage.setItem(TEACHER_KEY, JSON.stringify(this.teacher))
+  },
+
   logout() {
     this.token = null
     this.teacher = null

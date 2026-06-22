@@ -6,10 +6,14 @@ import com.ondo.child.dto.ChildResponse;
 import com.ondo.classroom.ClassroomRepository;
 import com.ondo.common.exception.BusinessException;
 import com.ondo.common.exception.ErrorCode;
+import com.ondo.photo.ProfilePhotoService;
+import com.ondo.photo.domain.OwnerKind;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,17 +21,23 @@ public class ChildService {
 
     private final ChildRepository childRepository;
     private final ClassroomRepository classroomRepository;
+    private final ProfilePhotoService photoService;
 
-    public ChildService(ChildRepository childRepository, ClassroomRepository classroomRepository) {
+    public ChildService(ChildRepository childRepository, ClassroomRepository classroomRepository,
+                        ProfilePhotoService photoService) {
         this.childRepository = childRepository;
         this.classroomRepository = classroomRepository;
+        this.photoService = photoService;
     }
 
-    /** 반 명단(가나다순, 삭제 제외). 반 소유권 검증. */
+    /** 반 명단(가나다순, 삭제 제외). 반 소유권 검증. 사진 갱신시각은 일괄 조회로 채운다. */
     public List<ChildResponse> getChildren(Long teacherId, Long classroomId) {
         verifyClassroomOwnership(teacherId, classroomId);
-        return childRepository.findByClassroomIdOrderByNameAscIdAsc(classroomId).stream()
-                .map(ChildResponse::from)
+        List<Child> children = childRepository.findByClassroomIdOrderByNameAscIdAsc(classroomId);
+        Map<Long, LocalDateTime> photoTimes = photoService.updatedAtByOwnerId(
+                OwnerKind.CHILD, children.stream().map(Child::getId).toList());
+        return children.stream()
+                .map(c -> ChildResponse.from(c, photoTimes.get(c.getId())))
                 .toList();
     }
 
@@ -52,7 +62,7 @@ public class ChildService {
     public ChildResponse updateChild(Long teacherId, Long childId, ChildRequest request) {
         Child child = findOwnedChild(teacherId, childId);
         child.update(request.name(), request.birthDate(), request.gender());
-        return ChildResponse.from(child);
+        return ChildResponse.from(child, photoService.updatedAtOrNull(OwnerKind.CHILD, childId));
     }
 
     @Transactional
@@ -68,10 +78,15 @@ public class ChildService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHILD_NOT_FOUND));
         classroomRepository.findByIdAndTeacherId(child.getClassroomId(), teacherId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHILD_NOT_FOUND));
-        childRepository.restoreById(childId, java.time.LocalDateTime.now(java.time.ZoneOffset.UTC));
+        childRepository.restoreById(childId, LocalDateTime.now(java.time.ZoneOffset.UTC));
         return childRepository.findById(childId)
-                .map(ChildResponse::from)
+                .map(c -> ChildResponse.from(c, photoService.updatedAtOrNull(OwnerKind.CHILD, childId)))
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHILD_NOT_FOUND));
+    }
+
+    /** 아이 소유권 검증(프로필 사진 등 외부 모듈에서 호출). 미존재/삭제/타 교사 → CHILD_NOT_FOUND. */
+    public void assertOwnedChild(Long teacherId, Long childId) {
+        findOwnedChild(teacherId, childId);
     }
 
     private void verifyClassroomOwnership(Long teacherId, Long classroomId) {

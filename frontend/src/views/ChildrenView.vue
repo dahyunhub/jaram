@@ -93,7 +93,7 @@ onMounted(() => { load(); loadHidden() })
     </div>
     <div v-else class="grid dt">
       <button v-for="c in children" :key="c.id" class="kid jr-card" @click="openTimeline(c)">
-        <Avatar :name="c.name" size="lg" />
+        <Avatar :name="c.name" size="lg" :photo-url="`/children/${c.id}/photo`" :photo-key="c.photoUpdatedAt || ''" />
         <span class="kid-name">{{ c.name }}</span>
         <span class="kid-chip">{{ fmtBirth(c.birthDate) }} · {{ c.gender === 'MALE' ? '남' : '여' }}</span>
       </button>
@@ -134,7 +134,7 @@ onMounted(() => { load(); loadHidden() })
       </div>
       <div v-else class="grid">
         <button v-for="c in children" :key="c.id" class="kid jr-card" @click="openTimeline(c)">
-          <Avatar :name="c.name" size="lg" />
+          <Avatar :name="c.name" size="lg" :photo-url="`/children/${c.id}/photo`" :photo-key="c.photoUpdatedAt || ''" />
           <span class="kid-name">{{ c.name }}</span>
           <span class="kid-chip">{{ fmtBirth(c.birthDate) }} · {{ c.gender === 'MALE' ? '남' : '여' }}</span>
         </button>
@@ -159,7 +159,7 @@ onMounted(() => { load(); loadHidden() })
       <div v-if="hiddenChildren.length" class="grid hidden-grid">
         <div v-for="c in hiddenChildren" :key="c.id" class="kid jr-card hidden-kid">
           <div class="hk-visual">
-            <Avatar :name="c.name" size="lg" />
+            <Avatar :name="c.name" size="lg" :photo-url="`/children/${c.id}/photo`" :photo-key="c.photoUpdatedAt || ''" />
             <span class="kid-name">{{ c.name }}</span>
             <span class="kid-chip">{{ fmtBirth(c.birthDate) }} · {{ c.gender === 'MALE' ? '남' : '여' }}</span>
           </div>

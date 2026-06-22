@@ -97,7 +97,7 @@ onMounted(reload)
       <div class="left-pane">
         <button class="back-link" @click="router.push({ name: 'children' })"><AppIcon name="back" :size="18" /> 아이 목록</button>
         <div v-if="child" class="head">
-          <Avatar :name="child.name" size="lg" />
+          <Avatar :name="child.name" size="lg" :photo-url="`/children/${childId}/photo`" :photo-key="child.photoUpdatedAt || ''" />
           <div class="head-info">
             <div class="jr-h1 name" style="font-size:26px">{{ child.name }}</div>
             <div class="sub">{{ session.classroom?.name }} · 관찰기록 <b>{{ total }}</b>개</div>
@@ -170,7 +170,7 @@ onMounted(reload)
       <header class="m-head screen">
         <button class="icbtn" @click="router.push({ name: 'children' })"><AppIcon name="back" :size="24" /></button>
         <div class="head" v-if="child">
-          <Avatar :name="child.name" size="lg" />
+          <Avatar :name="child.name" size="lg" :photo-url="`/children/${childId}/photo`" :photo-key="child.photoUpdatedAt || ''" />
           <div class="head-info">
             <div class="jr-h1 name">{{ child.name }}</div>
             <div class="sub">{{ session.classroom?.name }} · 관찰기록 <b>{{ total }}</b>개</div>
