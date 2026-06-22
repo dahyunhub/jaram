@@ -24,19 +24,20 @@ function isOn(it) {
 
 <template>
   <aside class="sidebar">
-    <div class="logo"><Logo variant="lockup" :height="44" /></div>
+    <RouterLink to="/" class="logo" aria-label="홈으로"><Logo variant="lockup" :height="44" /></RouterLink>
     <nav class="nav">
       <RouterLink v-for="it in items" :key="it.to" :to="it.to" class="item" :class="{ on: isOn(it) }">
         <AppIcon :name="it.icon" :size="22" :stroke="isOn(it) ? 2.3 : 2" /> {{ it.label }}
       </RouterLink>
     </nav>
-    <div class="teacher">
-      <Avatar :name="auth.teacher?.name || '선생님'" size="sm" />
+    <RouterLink to="/me" class="teacher" :class="{ on: route.name === 'me' }" aria-label="마이 페이지">
+      <Avatar :name="auth.teacher?.name || '선생님'" size="sm"
+              photo-url="/teachers/me/photo" :photo-key="auth.teacher?.photoUpdatedAt || ''" />
       <div class="t-info">
         <div class="t-name">{{ auth.teacher?.name || '선생님' }} 선생님</div>
         <div class="t-cls">{{ session.classroom?.name || '' }}</div>
       </div>
-    </div>
+    </RouterLink>
   </aside>
 </template>
 
@@ -46,7 +47,7 @@ function isOn(it) {
   background: var(--surface); border-right: 1px solid var(--hair);
   display: flex; flex-direction: column; padding: 26px 18px;
 }
-.logo { padding: 0 8px 24px; }
+.logo { display: block; padding: 0 8px 24px; cursor: pointer; }
 .nav { display: flex; flex-direction: column; gap: 4px; }
 .item {
   display: flex; align-items: center; gap: 13px; padding: 13px 14px; border-radius: 14px;
@@ -57,7 +58,10 @@ function isOn(it) {
 .teacher {
   margin-top: auto; display: flex; align-items: center; gap: 11px;
   padding: 12px; border-radius: 16px; background: var(--surface-soft);
+  text-decoration: none; color: inherit; cursor: pointer; transition: background .12s;
 }
+.teacher:hover { background: var(--brand-100); }
+.teacher.on { background: var(--brand-100); }
 .t-info { line-height: 1.3; min-width: 0; }
 .t-name { font-size: 14px; font-weight: 700; white-space: nowrap; }
 .t-cls { font-size: 12px; color: var(--text-sub); white-space: nowrap; }
