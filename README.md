@@ -6,6 +6,7 @@
 
 설계 산출물은 [`_bmad-output/planning-artifacts/`](_bmad-output/planning-artifacts/)
 (PRD · 아키텍처 · 에픽/스토리)와 [`docs/specs/`](docs/specs/)(API·데이터모델·에러코드·AI 연동 명세)를 정본으로 따른다.
+기획 관점 산출물(사용자 인터뷰 · As-Is/To-Be · User Flow/IA · 지표 설계)은 [`docs/portfolio/`](docs/portfolio/)에 정리했다.
 
 ## 저장소 구조
 
@@ -27,8 +28,20 @@ ondo/
 │   ├── src/                 # views · components · stores · lib · router
 │   └── mockups/             # Claude Design 디자인 정본(목업)
 ├── docs/specs/              # 구현 명세 + AI 연동 · 정합 가이드
+├── docs/portfolio/          # 기획 산출물 (인터뷰 · As-Is/To-Be · User Flow/IA · 지표 설계)
 └── _bmad-output/            # PRD · 아키텍처 · 에픽/스토리 · 회고 (BMad 산출물)
 ```
+
+## 기획 산출물
+
+서비스 기획 관점의 산출물을 [`docs/portfolio/`](docs/portfolio/)에 정리했다 — 코드(개발 산출물)에 흩어진 기획 근거를 문제 정의·사용자·지표 관점으로 재구성한 문서다.
+
+| 산출물 | 내용 |
+|--------|------|
+| [사용자 인터뷰 보고서](docs/portfolio/01-사용자인터뷰-보고서.md) | 현직 교사 인터뷰 질문지·응답 요약·인사이트 → 기능 결정 |
+| [As-Is / To-Be](docs/portfolio/02-as-is-to-be.md) | 교사 업무의 페인포인트 → 온도 기능 1:1 매핑 |
+| [User Flow & IA](docs/portfolio/03-userflow-IA.md) | 정보구조도 · 핵심 사용자 흐름 · AI 일지 화면 상태 머신 |
+| [지표 설계서](docs/portfolio/04-지표설계서.md) | North Star · 활성화 퍼널 · 기능별 지표 · GTM 이벤트 택소노미 |
 
 ## 기술 스택
 
